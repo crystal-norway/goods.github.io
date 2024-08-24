@@ -61,21 +61,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (startTime) {
             startButton.disabled = true;
-            startTimestampSpan.innerText = `开始时间: ${new Date(startTime).toLocaleString()}`;
+            startTimestampSpan.innerText = `开始时间: ${formatDateTime(startTime)}`;
             endButton.disabled = false;
             startButton.setAttribute('data-startTime', startTime);
         }
 
         if (endTime) {
             endButton.disabled = true;
-            endTimestampSpan.innerText = `结束时间: ${new Date(endTime).toLocaleString()}`;
+            endTimestampSpan.innerText = `结束时间: ${formatDateTime(endTime)}`;
             timeDiffSpan.innerText = `时间差: ${formatTimeDiff(timeDiff)}`;
         }
 
         startButton.addEventListener('click', function () {
             const startTime = new Date().getTime();
             startButton.disabled = true;
-            startTimestampSpan.innerText = `开始时间: ${new Date(startTime).toLocaleString()}`;
+            startTimestampSpan.innerText = `开始时间: ${formatDateTime(startTime)}`;
             endButton.disabled = false;
             startButton.setAttribute('data-startTime', startTime);
             saveEvent({ eventName: eventName, startTime: startTime });
@@ -86,10 +86,21 @@ document.addEventListener('DOMContentLoaded', function () {
             const startTime = parseInt(startButton.getAttribute('data-startTime'));
             const timeDiff = (endTime - startTime) / 1000;
             endButton.disabled = true;
-            endTimestampSpan.innerText = `结束时间: ${new Date(endTime).toLocaleString()}`;
+            endTimestampSpan.innerText = `结束时间: ${formatDateTime(endTime)}`;
             timeDiffSpan.innerText = `时间差: ${formatTimeDiff(timeDiff)}`;
             saveEvent({ eventName: eventName, startTime: startTime, endTime: endTime, timeDiff: timeDiff });
         });
+    }
+
+    function formatDateTime(timestamp) {
+        const date = new Date(timestamp);
+        const year = date.getFullYear();
+        const month = ('0' + (date.getMonth() + 1)).slice(-2);
+        const day = ('0' + date.getDate()).slice(-2);
+        const hour = ('0' + date.getHours()).slice(-2);
+        const minute = ('0' + date.getMinutes()).slice(-2);
+        const second = ('0' + date.getSeconds()).slice(-2);
+        return `${year}/${month}/${day} ${hour}:${minute}:${second}`;
     }
 
     function formatTimeDiff(seconds) {
@@ -132,12 +143,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function updateTime() {
         setInterval(() => {
             const now = new Date();
-            const formattedTime = now.getFullYear() + '/' +
-                ('0' + (now.getMonth() + 1)).slice(-2) + '/' +
-                ('0' + now.getDate()).slice(-2) + ' ' +
-                ('0' + now.getHours()).slice(-2) + ':' +
-                ('0' + now.getMinutes()).slice(-2) + ':' +
-                ('0' + now.getSeconds()).slice(-2);
+            const formattedTime = formatDateTime(now.getTime());
             document.getElementById('currentTime').innerText = formattedTime;
         }, 1000);
     }
@@ -151,8 +157,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         let csvContent = "事件名称,开始时间,结束时间,时间差\n";
         events.forEach(event => {
-            const startTime = new Date(event.startTime).toLocaleString();
-            const endTime = event.endTime ? new Date(event.endTime).toLocaleString() : '';
+            const startTime = formatDateTime(event.startTime);
+            const endTime = event.endTime ? formatDateTime(event.endTime) : '';
             const timeDiff = event.timeDiff ? formatTimeDiff(event.timeDiff) : '';
             csvContent += `${event.eventName},${startTime},${endTime},${timeDiff}\n`;
         });
