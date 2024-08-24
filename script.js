@@ -13,6 +13,12 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('announcedData').innerText = '';
     });
 
+    document.getElementById('clearAllButton').addEventListener('click', function() {
+        // 清除所有本地存储数据并刷新页面
+        localStorage.clear();
+        location.reload();
+    });
+
     function addNewEvent(startTime, endTime, timeDiff) {
         const eventContainer = document.createElement('div');
         eventContainer.className = 'event';
