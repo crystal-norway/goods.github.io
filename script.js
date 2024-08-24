@@ -22,6 +22,10 @@ document.addEventListener('DOMContentLoaded', function () {
         location.reload();
     });
 
+    document.getElementById('exportButton').addEventListener('click', function () {
+        exportDataToCSV();
+    });
+
     function addNewEvent(eventName, startTime, endTime, timeDiff) {
         const eventContainer = document.createElement('div');
         eventContainer.className = 'event';
@@ -136,5 +140,30 @@ document.addEventListener('DOMContentLoaded', function () {
                 ('0' + now.getSeconds()).slice(-2);
             document.getElementById('currentTime').innerText = formattedTime;
         }, 1000);
+    }
+
+    function exportDataToCSV() {
+        const events = JSON.parse(localStorage.getItem('events')) || [];
+        if (events.length === 0) {
+            alert('没有可导出的事件数据');
+            return;
+        }
+
+        let csvContent = "事件名称,开始时间,结束时间,时间差\n";
+        events.forEach(event => {
+            const startTime = new Date(event.startTime).toLocaleString();
+            const endTime = event.endTime ? new Date(event.endTime).toLocaleString() : '';
+            const timeDiff = event.timeDiff ? formatTimeDiff(event.timeDiff) : '';
+            csvContent += `${event.eventName},${startTime},${endTime},${timeDiff}\n`;
+        });
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'events.csv';
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     }
 });
