@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (endTime) {
             endButton.disabled = true;
             endTimestampSpan.innerText = `结束时间: ${new Date(endTime).toLocaleString()}`;
-            timeDiffSpan.innerText = `时间差: ${timeDiff} 秒`;
+            timeDiffSpan.innerText = `时间差: ${formatTimeDiff(timeDiff)}`;
         }
 
         startButton.addEventListener('click', function() {
@@ -64,18 +64,26 @@ document.addEventListener('DOMContentLoaded', function() {
             startButton.disabled = true;
             startTimestampSpan.innerText = `开始时间: ${new Date(startTime).toLocaleString()}`;
             endButton.disabled = false;
+            startButton.setAttribute('data-startTime', startTime);
             saveEvent({ startTime: startTime });
         });
 
         endButton.addEventListener('click', function() {
             const endTime = new Date().getTime();
-            const startTime = new Date(startButton.getAttribute('data-startTime'));
+            const startTime = parseInt(startButton.getAttribute('data-startTime'));
             const timeDiff = (endTime - startTime) / 1000;
             endButton.disabled = true;
             endTimestampSpan.innerText = `结束时间: ${new Date(endTime).toLocaleString()}`;
-            timeDiffSpan.innerText = `时间差: ${timeDiff} 秒`;
-            saveEvent({ startTime: startButton.getAttribute('data-startTime'), endTime: endTime, timeDiff: timeDiff });
+            timeDiffSpan.innerText = `时间差: ${formatTimeDiff(timeDiff)}`;
+            saveEvent({ startTime: startTime, endTime: endTime, timeDiff: timeDiff });
         });
+    }
+
+    function formatTimeDiff(seconds) {
+        const h = Math.floor(seconds / 3600);
+        const m = Math.floor((seconds % 3600) / 60);
+        const s = Math.floor(seconds % 60);
+        return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
     }
 
     function loadEvents() {
