@@ -1,19 +1,19 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     loadEvents();
     loadAnnouncement();
     updateTime();
 
-    document.getElementById('addEventButton').addEventListener('click', function() {
+    document.getElementById('addEventButton').addEventListener('click', function () {
         addNewEvent();
     });
 
-    document.getElementById('clearButton').addEventListener('click', function() {
+    document.getElementById('clearButton').addEventListener('click', function () {
         // 清除公告栏数据
         localStorage.removeItem('announcement');
         document.getElementById('announcedData').innerText = '';
     });
 
-    document.getElementById('clearAllButton').addEventListener('click', function() {
+    document.getElementById('clearAllButton').addEventListener('click', function () {
         // 清除所有本地存储数据并刷新页面
         localStorage.clear();
         location.reload();
@@ -51,6 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
             startButton.disabled = true;
             startTimestampSpan.innerText = `开始时间: ${new Date(startTime).toLocaleString()}`;
             endButton.disabled = false;
+            startButton.setAttribute('data-startTime', startTime);
         }
 
         if (endTime) {
@@ -59,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
             timeDiffSpan.innerText = `时间差: ${formatTimeDiff(timeDiff)}`;
         }
 
-        startButton.addEventListener('click', function() {
+        startButton.addEventListener('click', function () {
             const startTime = new Date().getTime();
             startButton.disabled = true;
             startTimestampSpan.innerText = `开始时间: ${new Date(startTime).toLocaleString()}`;
@@ -68,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
             saveEvent({ startTime: startTime });
         });
 
-        endButton.addEventListener('click', function() {
+        endButton.addEventListener('click', function () {
             const endTime = new Date().getTime();
             const startTime = parseInt(startButton.getAttribute('data-startTime'));
             const timeDiff = (endTime - startTime) / 1000;
@@ -93,8 +94,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function saveEvent(event) {
         const events = JSON.parse(localStorage.getItem('events')) || [];
-        events.push(event);
-        localStorage.setItem('events', JSON.stringify(events));
+        const updatedEvents = events.map(evt => {
+            // 如果事件已经存在，则更新它
+            if (evt.startTime === event.startTime) {
+                return event;
+            }
+            return evt;
+        });
+
+        // 如果事件是新事件，则添加它
+        if (!updatedEvents.some(evt => evt.startTime === event.startTime)) {
+            updatedEvents.push(event);
+        }
+
+        localStorage.setItem('events', JSON.stringify(updatedEvents));
     }
 
     function loadAnnouncement() {
