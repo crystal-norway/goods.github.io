@@ -4,7 +4,10 @@ document.addEventListener('DOMContentLoaded', function () {
     updateTime();
 
     document.getElementById('addEventButton').addEventListener('click', function () {
-        addNewEvent();
+        const eventName = prompt('请输入事件名称:');
+        if (eventName) {
+            addNewEvent(eventName);
+        }
     });
 
     document.getElementById('clearButton').addEventListener('click', function () {
@@ -19,12 +22,17 @@ document.addEventListener('DOMContentLoaded', function () {
         location.reload();
     });
 
-    function addNewEvent(startTime, endTime, timeDiff) {
+    function addNewEvent(eventName, startTime, endTime, timeDiff) {
         const eventContainer = document.createElement('div');
         eventContainer.className = 'event';
 
+        const eventNameSpan = document.createElement('span');
+        eventNameSpan.innerText = `事件名称: ${eventName}`;
+        eventContainer.appendChild(eventNameSpan);
+
         const startButton = document.createElement('button');
         startButton.innerText = '开始';
+        startButton.style.marginLeft = '10px';
         eventContainer.appendChild(startButton);
 
         const startTimestampSpan = document.createElement('span');
@@ -66,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function () {
             startTimestampSpan.innerText = `开始时间: ${new Date(startTime).toLocaleString()}`;
             endButton.disabled = false;
             startButton.setAttribute('data-startTime', startTime);
-            saveEvent({ startTime: startTime });
+            saveEvent({ eventName: eventName, startTime: startTime });
         });
 
         endButton.addEventListener('click', function () {
@@ -76,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function () {
             endButton.disabled = true;
             endTimestampSpan.innerText = `结束时间: ${new Date(endTime).toLocaleString()}`;
             timeDiffSpan.innerText = `时间差: ${formatTimeDiff(timeDiff)}`;
-            saveEvent({ startTime: startTime, endTime: endTime, timeDiff: timeDiff });
+            saveEvent({ eventName: eventName, startTime: startTime, endTime: endTime, timeDiff: timeDiff });
         });
     }
 
@@ -89,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function loadEvents() {
         const events = JSON.parse(localStorage.getItem('events')) || [];
-        events.forEach(event => addNewEvent(event.startTime, event.endTime, event.timeDiff));
+        events.forEach(event => addNewEvent(event.eventName, event.startTime, event.endTime, event.timeDiff));
     }
 
     function saveEvent(event) {
