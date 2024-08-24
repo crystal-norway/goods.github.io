@@ -4,44 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Event Timer</title>
-    <style>
-        .event {
-            margin-bottom: 20px;
-        }
-        #announcement {
-            margin-top: 20px;
-            padding: 10px;
-            border: 1px solid #ccc;
-        }
-        #announcement span {
-            display: block;
-            margin-bottom: 10px;
-        }
-        #currentTime {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-        #clearAllButton, #exportButton {
-            margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 16px;
-        }
-    </style>
+    <!-- 引用CSS文件 -->
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <h1>Event Timer</h1>
-    <div id="currentTime"></div> <!-- 新增的时间显示部分 -->
-    <button id="addEventButton">添加事件</button>
-    <div id="eventsContainer"></div>
-    <div id="announcement">
-        <h2>艾斯比张涵乔</h2>
-        <span id="announcedData"></span>
-        <button id="clearButton">清除</button>
+    <div class="container">
+        <header>
+            <h1>Event Timer</h1>
+            <div id="currentTime"></div> <!-- 时间显示部分 -->
+        </header>
+        <main>
+            <button id="addEventButton" class="primary-button">添加事件</button>
+            <div id="eventsContainer"></div>
+            <div id="announcement">
+                <h2>公告栏</h2>
+                <span id="announcedData"></span>
+                <button id="clearButton" class="secondary-button">清除</button>
+            </div>
+        </main>
+        <footer>
+            <button id="clearAllButton" class="secondary-button">清除所有数据</button>
+            <button id="exportButton" class="primary-button">数据导出</button>
+        </footer>
     </div>
-    <button id="clearAllButton">清除所有数据</button> <!-- 新增的“清除所有数据”按钮 -->
-    <button id="exportButton">数据导出</button> <!-- 新增的“数据导出”按钮 -->
 
-    <script src="script.js"></script>
+    <!-- 引用JavaScript文件 -->
+    <script src="js/script.js"></script>
 </body>
 </html>
