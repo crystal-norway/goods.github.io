@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     loadEvents();
     loadAnnouncement();
+    updateTime();
 
     document.getElementById('addEventButton').addEventListener('click', function() {
         addNewEvent();
@@ -84,5 +85,18 @@ document.addEventListener('DOMContentLoaded', function() {
         if (announcement) {
             document.getElementById('announcedData').innerText = announcement;
         }
+    }
+
+    function updateTime() {
+        setInterval(() => {
+            const now = new Date();
+            const formattedTime = now.getFullYear() + '/' +
+                ('0' + (now.getMonth() + 1)).slice(-2) + '/' +
+                ('0' + now.getDate()).slice(-2) + ' ' +
+                ('0' + now.getHours()).slice(-2) + ':' +
+                ('0' + now.getMinutes()).slice(-2) + ':' +
+                ('0' + now.getSeconds()).slice(-2);
+            document.getElementById('currentTime').innerText = formattedTime;
+        }, 1000);
     }
 });
