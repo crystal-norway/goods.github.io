@@ -8,12 +8,26 @@
         .event {
             margin-bottom: 20px;
         }
+        #announcement {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+        #announcement span {
+            display: block;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
     <h1>Event Timer</h1>
     <button id="addEventButton">添加事件</button>
     <div id="eventsContainer"></div>
+    <div id="announcement">
+        <h2>公告栏</h2>
+        <span id="announcedData"></span>
+        <button id="clearButton">清除</button>
+    </div>
 
     <script src="script.js"></script>
 </body>
