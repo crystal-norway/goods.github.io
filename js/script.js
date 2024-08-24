@@ -31,12 +31,13 @@ document.addEventListener('DOMContentLoaded', function () {
         eventContainer.className = 'event';
 
         const eventNameSpan = document.createElement('span');
-        eventNameSpan.innerText = `事件: ${eventName}`;
+        eventNameSpan.innerText = `事件名称: ${eventName}`;
         eventContainer.appendChild(eventNameSpan);
 
         const startButton = document.createElement('button');
         startButton.innerText = '开始';
         startButton.style.marginLeft = '10px';
+        startButton.className = 'primary-button';
         eventContainer.appendChild(startButton);
 
         const startTimestampSpan = document.createElement('span');
@@ -47,6 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
         endButton.innerText = '结束';
         endButton.style.marginLeft = '10px';
         endButton.disabled = true;
+        endButton.className = 'secondary-button';
         eventContainer.appendChild(endButton);
 
         const endTimestampSpan = document.createElement('span');
