@@ -1,34 +1,88 @@
-document.getElementById('addEventButton').addEventListener('click', function() {
-    // 创建新的事件容器
-    const eventContainer = document.createElement('div');
-    eventContainer.className = 'event';
-    
-    // 创建开始按钮
-    const startButton = document.createElement('button');
-    startButton.innerText = '开始';
-    eventContainer.appendChild(startButton);
-    
-    // 创建显示时间差的span
-    const timeDiffSpan = document.createElement('span');
-    timeDiffSpan.style.marginLeft = '10px';
-    eventContainer.appendChild(timeDiffSpan);
-    
-    // 将新事件容器添加到页面
-    document.getElementById('eventsContainer').appendChild(eventContainer);
-    
-    let startTime;
-    
-    startButton.addEventListener('click', function() {
-        if (startButton.innerText === '开始') {
-            // 记录开始时间
-            startTime = new Date();
-            startButton.innerText = '结束';
-        } else if (startButton.innerText === '结束') {
-            // 计算时间差
-            const endTime = new Date();
-            const timeDiff = (endTime - startTime) / 1000; // 以秒为单位的时间差
-            timeDiffSpan.innerText = `时间差: ${timeDiff} 秒`;
-            startButton.disabled = true; // 禁用按钮以防止重复点击
-        }
+document.addEventListener('DOMContentLoaded', function() {
+    loadEvents();
+    loadAnnouncement();
+
+    document.getElementById('addEventButton').addEventListener('click', function() {
+        addNewEvent();
     });
+
+    document.getElementById('clearButton').addEventListener('click', function() {
+        // 清除公告栏数据
+        localStorage.removeItem('announcement');
+        document.getElementById('announcedData').innerText = '';
+    });
+
+    function addNewEvent(startTime, endTime, timeDiff) {
+        const eventContainer = document.createElement('div');
+        eventContainer.className = 'event';
+
+        const startButton = document.createElement('button');
+        startButton.innerText = '开始';
+        eventContainer.appendChild(startButton);
+
+        const timeDiffSpan = document.createElement('span');
+        timeDiffSpan.style.marginLeft = '10px';
+        eventContainer.appendChild(timeDiffSpan);
+
+        const saveButton = document.createElement('button');
+        saveButton.innerText = '保存';
+        saveButton.style.marginLeft = '10px';
+        eventContainer.appendChild(saveButton);
+
+        document.getElementById('eventsContainer').appendChild(eventContainer);
+
+        if (startTime) {
+            startButton.innerText = '结束';
+            startButton.disabled = true;
+            if (timeDiff) {
+                timeDiffSpan.innerText = `时间差: ${timeDiff} 秒`;
+            }
+        }
+
+        startButton.addEventListener('click', function() {
+            if (startButton.innerText === '开始') {
+                const startTime = new Date();
+                startButton.innerText = '结束';
+                startButton.setAttribute('data-startTime', startTime);
+                saveEvent({ startTime: startTime.getTime() });
+            } else if (startButton.innerText === '结束') {
+                const endTime = new Date();
+                const startTime = new Date(startButton.getAttribute('data-startTime'));
+                const timeDiff = (endTime - startTime) / 1000;
+                timeDiffSpan.innerText = `时间差: ${timeDiff} 秒`;
+                startButton.disabled = true;
+                saveEvent({ startTime: startTime.getTime(), endTime: endTime.getTime(), timeDiff: timeDiff });
+            }
+        });
+
+        saveButton.addEventListener('click', function() {
+            if (timeDiffSpan.innerText) {
+                const announcement = timeDiffSpan.innerText;
+                localStorage.setItem('announcement', announcement);
+                document.getElementById('announcedData').innerText = announcement;
+            }
+        });
+
+        if (startTime) {
+            startButton.setAttribute('data-startTime', startTime);
+        }
+    }
+
+    function loadEvents() {
+        const events = JSON.parse(localStorage.getItem('events')) || [];
+        events.forEach(event => addNewEvent(event.startTime, event.endTime, event.timeDiff));
+    }
+
+    function saveEvent(event) {
+        const events = JSON.parse(localStorage.getItem('events')) || [];
+        events.push(event);
+        localStorage.setItem('events', JSON.stringify(events));
+    }
+
+    function loadAnnouncement() {
+        const announcement = localStorage.getItem('announcement');
+        if (announcement) {
+            document.getElementById('announcedData').innerText = announcement;
+        }
+    }
 });
