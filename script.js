@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
         eventContainer.className = 'event';
 
         const eventNameSpan = document.createElement('span');
-        eventNameSpan.innerText = `事件名称: ${eventName}`;
+        eventNameSpan.innerText = `事件: ${eventName}`;
         eventContainer.appendChild(eventNameSpan);
 
         const startButton = document.createElement('button');
