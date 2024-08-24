@@ -27,52 +27,55 @@ document.addEventListener('DOMContentLoaded', function() {
         startButton.innerText = '开始';
         eventContainer.appendChild(startButton);
 
+        const startTimestampSpan = document.createElement('span');
+        startTimestampSpan.style.marginLeft = '10px';
+        eventContainer.appendChild(startTimestampSpan);
+
+        const endButton = document.createElement('button');
+        endButton.innerText = '结束';
+        endButton.style.marginLeft = '10px';
+        endButton.disabled = true;
+        eventContainer.appendChild(endButton);
+
+        const endTimestampSpan = document.createElement('span');
+        endTimestampSpan.style.marginLeft = '10px';
+        eventContainer.appendChild(endTimestampSpan);
+
         const timeDiffSpan = document.createElement('span');
         timeDiffSpan.style.marginLeft = '10px';
         eventContainer.appendChild(timeDiffSpan);
 
-        const saveButton = document.createElement('button');
-        saveButton.innerText = '保存';
-        saveButton.style.marginLeft = '10px';
-        eventContainer.appendChild(saveButton);
-
         document.getElementById('eventsContainer').appendChild(eventContainer);
 
         if (startTime) {
-            startButton.innerText = '结束';
             startButton.disabled = true;
-            if (timeDiff) {
-                timeDiffSpan.innerText = `时间差: ${timeDiff} 秒`;
-            }
+            startTimestampSpan.innerText = `开始时间: ${new Date(startTime).toLocaleString()}`;
+            endButton.disabled = false;
+        }
+
+        if (endTime) {
+            endButton.disabled = true;
+            endTimestampSpan.innerText = `结束时间: ${new Date(endTime).toLocaleString()}`;
+            timeDiffSpan.innerText = `时间差: ${timeDiff} 秒`;
         }
 
         startButton.addEventListener('click', function() {
-            if (startButton.innerText === '开始') {
-                const startTime = new Date();
-                startButton.innerText = '结束';
-                startButton.setAttribute('data-startTime', startTime);
-                saveEvent({ startTime: startTime.getTime() });
-            } else if (startButton.innerText === '结束') {
-                const endTime = new Date();
-                const startTime = new Date(startButton.getAttribute('data-startTime'));
-                const timeDiff = (endTime - startTime) / 1000;
-                timeDiffSpan.innerText = `时间差: ${timeDiff} 秒`;
-                startButton.disabled = true;
-                saveEvent({ startTime: startTime.getTime(), endTime: endTime.getTime(), timeDiff: timeDiff });
-            }
+            const startTime = new Date().getTime();
+            startButton.disabled = true;
+            startTimestampSpan.innerText = `开始时间: ${new Date(startTime).toLocaleString()}`;
+            endButton.disabled = false;
+            saveEvent({ startTime: startTime });
         });
 
-        saveButton.addEventListener('click', function() {
-            if (timeDiffSpan.innerText) {
-                const announcement = timeDiffSpan.innerText;
-                localStorage.setItem('announcement', announcement);
-                document.getElementById('announcedData').innerText = announcement;
-            }
+        endButton.addEventListener('click', function() {
+            const endTime = new Date().getTime();
+            const startTime = new Date(startButton.getAttribute('data-startTime'));
+            const timeDiff = (endTime - startTime) / 1000;
+            endButton.disabled = true;
+            endTimestampSpan.innerText = `结束时间: ${new Date(endTime).toLocaleString()}`;
+            timeDiffSpan.innerText = `时间差: ${timeDiff} 秒`;
+            saveEvent({ startTime: startButton.getAttribute('data-startTime'), endTime: endTime, timeDiff: timeDiff });
         });
-
-        if (startTime) {
-            startButton.setAttribute('data-startTime', startTime);
-        }
     }
 
     function loadEvents() {
