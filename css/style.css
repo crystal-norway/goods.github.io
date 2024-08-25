@@ -18,6 +18,7 @@ body {
     max-width: 600px;
     padding: 20px;
     box-sizing: border-box;
+    overflow: hidden;
 }
 
 header, footer {
@@ -39,6 +40,22 @@ h1 {
     color: #666;
 }
 
+#buttonContainer {
+    position: sticky;
+    top: 0;
+    background-color: #fff;
+    padding: 10px 0;
+    text-align: center;
+    z-index: 1;
+    border-bottom: 1px solid #ddd;
+}
+
+#eventsContainer {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-top: 10px;
+}
+
 #eventsContainer .event {
     background-color: #f1f1f1;
     border-radius: 8px;
@@ -55,7 +72,7 @@ h2 {
     margin-top: 0;
 }
 
-.primary-button, .secondary-button {
+.primary-button, .secondary-button, .circle-button {
     display: inline-block;
     padding: 10px 20px;
     margin: 10px 5px;
@@ -83,6 +100,24 @@ h2 {
 
 .secondary-button:hover {
     background-color: #e1e1e1;
+}
+
+.circle-button {
+    background-color: #007aff;
+    color: #fff;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    line-height: 1;
+    padding: 0;
+}
+
+.circle-button:hover {
+    background-color: #005bb5;
 }
 
 #announcement {
