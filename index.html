@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Event Timer</title>
-    <!-- 引用CSS文件 -->
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -14,7 +13,9 @@
             <div id="currentTime"></div> <!-- 时间显示部分 -->
         </header>
         <main>
-            <button id="addEventButton" class="primary-button">添加事件</button>
+            <div id="buttonContainer">
+                <button id="addEventButton" class="circle-button">+</button>
+            </div>
             <div id="eventsContainer"></div>
             <div id="announcement">
                 <h2>公告栏</h2>
@@ -28,7 +29,6 @@
         </footer>
     </div>
 
-    <!-- 引用JavaScript文件 -->
     <script src="js/script.js"></script>
 </body>
 </html>
