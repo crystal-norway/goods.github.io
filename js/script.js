@@ -191,7 +191,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const formattedDate = `${year}-${month}-${day}`;
         
         // 使用格式化的日期作为文件名
-        link.download = `${formattedDate}.csv`;
+        link.download = `events_${formattedDate}.csv`;
 
         link.href = URL.createObjectURL(blob);
         link.style.display = 'none';
