@@ -59,6 +59,15 @@ document.addEventListener('DOMContentLoaded', function () {
         timeDiffSpan.style.marginLeft = '10px';
         eventContainer.appendChild(timeDiffSpan);
 
+        const deleteButton = document.createElement('button');
+        deleteButton.className = 'delete-button';
+        deleteButton.textContent = 'x';
+        deleteButton.addEventListener('click', function () {
+            eventsContainer.removeChild(eventContainer);
+            removeEvent(startButton.getAttribute('data-startTime'));
+        });
+        eventContainer.appendChild(deleteButton);
+
         document.getElementById('eventsContainer').appendChild(eventContainer);
 
         if (startTime) {
@@ -133,6 +142,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         localStorage.setItem('events', JSON.stringify(updatedEvents));
+    }
+
+    function removeEvent(startTime) {
+        let events = JSON.parse(localStorage.getItem('events')) || [];
+        events = events.filter(event => event.startTime !== parseInt(startTime));
+        localStorage.setItem('events', JSON.stringify(events));
     }
 
     function loadAnnouncement() {
