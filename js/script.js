@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const year = now.getFullYear();
         const month = ('0' + (now.getMonth() + 1)).slice(-2);
         const day = ('0' + now.getDate()).slice(-2);
-        const formattedDate = `${year}-${month}-${day}`;
+        const formattedDate = `${year}_${month}_${day}`;
         const encodedFileName = encodeURIComponent(`events_${formattedDate}.csv`);
         link.download = encodedFileName;
 
