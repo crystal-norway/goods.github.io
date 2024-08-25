@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const hour = ('0' + date.getHours()).slice(-2);
         const minute = ('0' + date.getMinutes()).slice(-2);
         const second = ('0' + date.getSeconds()).slice(-2);
-        return `${year}/${month}/${day} ${hour}:${minute}:${second}`;
+        return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
     }
 
     function formatTimeDiff(seconds) {
@@ -182,8 +182,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement('a');
+
+        // 获取当前日期并格式化
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = ('0' + (now.getMonth() + 1)).slice(-2);
+        const day = ('0' + now.getDate()).slice(-2);
+        const formattedDate = `${year}-${month}-${day}`;
+        
+        // 使用格式化的日期作为文件名
+        link.download = `${formattedDate}.csv`;
+
         link.href = URL.createObjectURL(blob);
-        link.download = 'events.csv';
         link.style.display = 'none';
         document.body.appendChild(link);
         link.click();
