@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const deleteButton = document.createElement('button');
     deleteButton.className = 'delete-button';
-    deleteButton.textContent = 'x';
+    deleteButton.textContent = '✖';
     deleteButton.addEventListener('click', function () {
         eventsContainer.removeChild(eventContainer);
         removeEvent(startButton.getAttribute('data-startTime'));
