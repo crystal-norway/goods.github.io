@@ -30,9 +30,28 @@ document.addEventListener('DOMContentLoaded', function () {
         const eventContainer = document.createElement('div');
         eventContainer.className = 'event';
 
+        // 添加事件名称的容器
+        const eventNameContainer = document.createElement('div');
+        eventNameContainer.className = 'event-name-container';
+
         const eventNameSpan = document.createElement('span');
         eventNameSpan.innerText = `事件名称: ${eventName}`;
-        eventContainer.appendChild(eventNameSpan);
+        eventNameContainer.appendChild(eventNameSpan);
+
+        // 添加编辑按钮
+        const editButton = document.createElement('button');
+        editButton.innerText = '✏️';
+        editButton.className = 'edit-button';
+        editButton.addEventListener('click', function () {
+            const newEventName = prompt('编辑事件名称:', eventNameSpan.innerText.replace('事件名称: ', ''));
+            if (newEventName) {
+                eventNameSpan.innerText = `事件名称: ${newEventName}`;
+                updateEventNameInStorage(startButton.getAttribute('data-startTime'), newEventName);
+            }
+        });
+        eventNameContainer.appendChild(editButton);
+
+        eventContainer.appendChild(eventNameContainer);
 
         const startButton = document.createElement('button');
         startButton.innerText = '开始';
@@ -150,6 +169,17 @@ document.addEventListener('DOMContentLoaded', function () {
         localStorage.setItem('events', JSON.stringify(events));
     }
 
+    function updateEventNameInStorage(startTime, newEventName) {
+        let events = JSON.parse(localStorage.getItem('events')) || [];
+        events = events.map(event => {
+            if (event.startTime === parseInt(startTime)) {
+                event.eventName = newEventName;
+            }
+            return event;
+        });
+        localStorage.setItem('events', JSON.stringify(events));
+    }
+
     function loadAnnouncement() {
         const announcement = localStorage.getItem('announcement');
         if (announcement) {
@@ -188,13 +218,11 @@ document.addEventListener('DOMContentLoaded', function () {
         const year = now.getFullYear();
         const month = ('0' + (now.getMonth() + 1)).slice(-2);
         const day = ('0' + now.getDate()).slice(-2);
-        const formattedDate = `${year}-${month}-${day}`;
-        const encodedFileName = encodeURIComponent(`events_${formattedDate}.csv`);
-        link.download = encodedFileName;
-
+        const formattedDate = `${year}_${month}_${day}`; // 使用下划线替代连字符
         
         // 使用格式化的日期作为文件名
-        //link.download = `events_${formattedDate}.csv`;
+        const fileName = `events_${formattedDate}.csv`;
+        link.download = fileName;
 
         link.href = URL.createObjectURL(blob);
         link.style.display = 'none';
