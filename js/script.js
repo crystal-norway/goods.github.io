@@ -27,100 +27,100 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     function addNewEvent(eventName, startTime, endTime, timeDiff) {
-        const eventContainer = document.createElement('div');
-        eventContainer.className = 'event';
+    const eventContainer = document.createElement('div');
+    eventContainer.className = 'event';
 
-        // 添加事件名称的容器
-        const eventNameContainer = document.createElement('div');
-        eventNameContainer.className = 'event-name-container';
+    // 添加事件名称的容器
+    const eventNameContainer = document.createElement('div');
+    eventNameContainer.className = 'event-name-container';
 
-        const eventNameSpan = document.createElement('span');
-        eventNameSpan.innerText = `事件名称: ${eventName}`;
-        eventNameContainer.appendChild(eventNameSpan);
-
-        // 添加编辑按钮
-        const editButton = document.createElement('button');
-        editButton.innerText = '✏️';
-        editButton.className = 'edit-button';
-        editButton.addEventListener('click', function () {
-            const newEventName = prompt('编辑事件名称:', eventNameSpan.innerText.replace('事件名称: ', ''));
-            if (newEventName) {
-                eventNameSpan.innerText = `事件名称: ${newEventName}`;
-                updateEventNameInStorage(startButton.getAttribute('data-startTime'), newEventName);
-            }
-        });
-        eventNameContainer.appendChild(editButton);
-
-        eventContainer.appendChild(eventNameContainer);
-
-        const startButton = document.createElement('button');
-        startButton.innerText = '开始';
-        startButton.style.marginLeft = '10px';
-        startButton.className = 'primary-button';
-        eventContainer.appendChild(startButton);
-
-        const startTimestampSpan = document.createElement('span');
-        startTimestampSpan.style.marginLeft = '10px';
-        eventContainer.appendChild(startTimestampSpan);
-
-        const endButton = document.createElement('button');
-        endButton.innerText = '结束';
-        endButton.style.marginLeft = '10px';
-        endButton.disabled = true;
-        endButton.className = 'secondary-button';
-        eventContainer.appendChild(endButton);
-
-        const endTimestampSpan = document.createElement('span');
-        endTimestampSpan.style.marginLeft = '10px';
-        eventContainer.appendChild(endTimestampSpan);
-
-        const timeDiffSpan = document.createElement('span');
-        timeDiffSpan.style.marginLeft = '10px';
-        eventContainer.appendChild(timeDiffSpan);
-
-        const deleteButton = document.createElement('button');
-        deleteButton.className = 'delete-button';
-        deleteButton.textContent = 'x';
-        deleteButton.addEventListener('click', function () {
-            eventsContainer.removeChild(eventContainer);
-            removeEvent(startButton.getAttribute('data-startTime'));
-        });
-        eventContainer.appendChild(deleteButton);
-
-        document.getElementById('eventsContainer').appendChild(eventContainer);
-
-        if (startTime) {
-            startButton.disabled = true;
-            startTimestampSpan.innerText = `开始时间: ${formatDateTime(startTime)}`;
-            endButton.disabled = false;
-            startButton.setAttribute('data-startTime', startTime);
+    // 添加编辑按钮
+    const editButton = document.createElement('button');
+    editButton.innerText = '✏️';
+    editButton.className = 'edit-button';
+    editButton.addEventListener('click', function () {
+        const newEventName = prompt('编辑事件名称:', eventNameSpan.innerText.replace('事件名称: ', ''));
+        if (newEventName) {
+            eventNameSpan.innerText = `事件名称: ${newEventName}`;
+            updateEventNameInStorage(startButton.getAttribute('data-startTime'), newEventName);
         }
+    });
+    eventNameContainer.appendChild(editButton);
 
-        if (endTime) {
-            endButton.disabled = true;
-            endTimestampSpan.innerText = `结束时间: ${formatDateTime(endTime)}`;
-            timeDiffSpan.innerText = `时间差: ${formatTimeDiff(timeDiff)}`;
-        }
+    const eventNameSpan = document.createElement('span');
+    eventNameSpan.innerText = `事件名称: ${eventName}`;
+    eventNameContainer.appendChild(eventNameSpan);
 
-        startButton.addEventListener('click', function () {
-            const startTime = new Date().getTime();
-            startButton.disabled = true;
-            startTimestampSpan.innerText = `开始时间: ${formatDateTime(startTime)}`;
-            endButton.disabled = false;
-            startButton.setAttribute('data-startTime', startTime);
-            saveEvent({ eventName: eventName, startTime: startTime });
-        });
+    eventContainer.appendChild(eventNameContainer);
 
-        endButton.addEventListener('click', function () {
-            const endTime = new Date().getTime();
-            const startTime = parseInt(startButton.getAttribute('data-startTime'));
-            const timeDiff = (endTime - startTime) / 1000;
-            endButton.disabled = true;
-            endTimestampSpan.innerText = `结束时间: ${formatDateTime(endTime)}`;
-            timeDiffSpan.innerText = `时间差: ${formatTimeDiff(timeDiff)}`;
-            saveEvent({ eventName: eventName, startTime: startTime, endTime: endTime, timeDiff: timeDiff });
-        });
+    const startButton = document.createElement('button');
+    startButton.innerText = '开始';
+    startButton.style.marginLeft = '10px';
+    startButton.className = 'primary-button';
+    eventContainer.appendChild(startButton);
+
+    const startTimestampSpan = document.createElement('span');
+    startTimestampSpan.style.marginLeft = '10px';
+    eventContainer.appendChild(startTimestampSpan);
+
+    const endButton = document.createElement('button');
+    endButton.innerText = '结束';
+    endButton.style.marginLeft = '10px';
+    endButton.disabled = true;
+    endButton.className = 'secondary-button';
+    eventContainer.appendChild(endButton);
+
+    const endTimestampSpan = document.createElement('span');
+    endTimestampSpan.style.marginLeft = '10px';
+    eventContainer.appendChild(endTimestampSpan);
+
+    const timeDiffSpan = document.createElement('span');
+    timeDiffSpan.style.marginLeft = '10px';
+    eventContainer.appendChild(timeDiffSpan);
+
+    const deleteButton = document.createElement('button');
+    deleteButton.className = 'delete-button';
+    deleteButton.textContent = 'x';
+    deleteButton.addEventListener('click', function () {
+        eventsContainer.removeChild(eventContainer);
+        removeEvent(startButton.getAttribute('data-startTime'));
+    });
+    eventContainer.appendChild(deleteButton);
+
+    document.getElementById('eventsContainer').appendChild(eventContainer);
+
+    if (startTime) {
+        startButton.disabled = true;
+        startTimestampSpan.innerText = `开始时间: ${formatDateTime(startTime)}`;
+        endButton.disabled = false;
+        startButton.setAttribute('data-startTime', startTime);
     }
+
+    if (endTime) {
+        endButton.disabled = true;
+        endTimestampSpan.innerText = `结束时间: ${formatDateTime(endTime)}`;
+        timeDiffSpan.innerText = `时间差: ${formatTimeDiff(timeDiff)}`;
+    }
+
+    startButton.addEventListener('click', function () {
+        const startTime = new Date().getTime();
+        startButton.disabled = true;
+        startTimestampSpan.innerText = `开始时间: ${formatDateTime(startTime)}`;
+        endButton.disabled = false;
+        startButton.setAttribute('data-startTime', startTime);
+        saveEvent({ eventName: eventName, startTime: startTime });
+    });
+
+    endButton.addEventListener('click', function () {
+        const endTime = new Date().getTime();
+        const startTime = parseInt(startButton.getAttribute('data-startTime'));
+        const timeDiff = (endTime - startTime) / 1000;
+        endButton.disabled = true;
+        endTimestampSpan.innerText = `结束时间: ${formatDateTime(endTime)}`;
+        timeDiffSpan.innerText = `时间差: ${formatTimeDiff(timeDiff)}`;
+        saveEvent({ eventName: eventName, startTime: startTime, endTime: endTime, timeDiff: timeDiff });
+    });
+}
 
     function formatDateTime(timestamp) {
         const date = new Date(timestamp);
