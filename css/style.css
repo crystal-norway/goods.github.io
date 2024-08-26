@@ -159,6 +159,7 @@ h2 {
     font-weight: 400;
 }
 
+/* 新增的样式 */
 .event-name-container {
     display: flex;
     align-items: center;
@@ -177,4 +178,3 @@ h2 {
 .edit-button:hover {
     color: #005bb5;
 }
-
