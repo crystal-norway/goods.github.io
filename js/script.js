@@ -15,14 +15,15 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('announcedData').innerText = '';
     });
 
-    document.getElementById('clearAllButton').addEventListener('click', function () {
+   document.getElementById('clearAllButton').addEventListener('click', function () {
         localStorage.clear();
         location.reload();
     });
-
+    
     document.getElementById('exportButton').addEventListener('click', function () {
         exportDataToCSV();
     });
+
 
     function addNewEvent(eventName, startTime, endTime, timeDiff) {
         const eventContainer = document.createElement('div');
