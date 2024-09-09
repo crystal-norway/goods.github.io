@@ -34,15 +34,22 @@ document.addEventListener('DOMContentLoaded', function () {
         const editButton = document.createElement('button');
         editButton.innerText = '✏️';
         editButton.className = 'edit-button';
+
+        let currentStartTime = startTime ? new Date(startTime) : new Date();
+        let currentEndTime = endTime ? new Date(endTime) : new Date();
+
         editButton.addEventListener('click', function () {
-            const start = startTime ? new Date(startTime) : new Date();
-            const end = endTime ? new Date(endTime) : new Date();
-            showDateTimeEditor(eventName, start, end, function(newEventName, newStartTime, newEndTime) {
+            showDateTimeEditor(eventName, currentStartTime, currentEndTime, function(newEventName, newStartTime, newEndTime) {
                 eventNameSpan.innerText = `事件名称: ${newEventName}`;
                 startTimestampSpan.innerText = `开始时间: ${formatDateTime(newStartTime.getTime())}`;
                 endTimestampSpan.innerText = `结束时间: ${formatDateTime(newEndTime.getTime())}`;
                 const timeDiff = (newEndTime.getTime() - newStartTime.getTime()) / 1000;
                 timeDiffSpan.innerText = `时间差: ${formatTimeDiff(timeDiff)}`;
+
+                currentStartTime = newStartTime;
+                currentEndTime = newEndTime;
+                eventName = newEventName;
+
                 updateEventInStorage(startTime, {
                     eventName: newEventName,
                     startTime: newStartTime.getTime(),
@@ -108,20 +115,20 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         startButton.addEventListener('click', function () {
-            startTime = new Date().getTime();
+            currentStartTime = new Date();
             startButton.disabled = true;
-            startTimestampSpan.innerText = `开始时间: ${formatDateTime(startTime)}`;
+            startTimestampSpan.innerText = `开始时间: ${formatDateTime(currentStartTime.getTime())}`;
             endButton.disabled = false;
-            saveEvent({ eventName: eventName, startTime: startTime });
+            saveEvent({ eventName: eventName, startTime: currentStartTime.getTime() });
         });
 
         endButton.addEventListener('click', function () {
-            const endTime = new Date().getTime();
-            const timeDiff = (endTime - startTime) / 1000;
+            currentEndTime = new Date();
+            const timeDiff = (currentEndTime.getTime() - currentStartTime.getTime()) / 1000;
             endButton.disabled = true;
-            endTimestampSpan.innerText = `结束时间: ${formatDateTime(endTime)}`;
+            endTimestampSpan.innerText = `结束时间: ${formatDateTime(currentEndTime.getTime())}`;
             timeDiffSpan.innerText = `时间差: ${formatTimeDiff(timeDiff)}`;
-            saveEvent({ eventName: eventName, startTime: startTime, endTime: endTime, timeDiff: timeDiff });
+            saveEvent({ eventName: eventName, startTime: currentStartTime.getTime(), endTime: currentEndTime.getTime(), timeDiff: timeDiff });
         });
     }
 
