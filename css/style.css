@@ -144,13 +144,13 @@ h2 {
 }
 
 .edit-button {
-    background-color: transparent; /* 去掉背景色 */
+    background-color: #007aff;
     right: 48px;
     border: none; /* 没有边框 */
 }
 
 .edit-button:hover {
-    background-color: #555;
+    background-color: #005bb5;
 }
 
 #datetime-editor {
