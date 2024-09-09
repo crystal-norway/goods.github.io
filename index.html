@@ -10,7 +10,7 @@
     <div class="container">
         <header>
             <h1>OYS's Event Timer</h1>
-            <div id="currentTime"></div> <!-- 时间显示部分 -->
+            <div id="currentTime"></div>
         </header>
         <main>
             <div id="buttonContainer">
@@ -27,6 +27,16 @@
             <button id="clearAllButton" class="secondary-button">清除所有数据</button>
             <button id="exportButton" class="primary-button">数据导出</button>
         </footer>
+    </div>
+
+    <div id="datetime-editor" style="display: none;">
+        <input type="number" id="year" min="1900" max="2100">
+        <input type="number" id="month" min="1" max="12">
+        <input type="number" id="day" min="1" max="31">
+        <input type="number" id="hour" min="0" max="23">
+        <input type="number" id="minute" min="0" max="59">
+        <input type="number" id="second" min="0" max="59">
+        <button id="save-datetime">保存</button>
     </div>
 
     <script src="js/script.js"></script>
