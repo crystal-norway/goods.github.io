@@ -146,34 +146,48 @@ h2 {
     border-radius: 16px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     width: 80%;
-    max-width: 400px;
-    padding: 16px;
+    max-width: 350px;
+    padding: 12px;
     box-sizing: border-box;
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 1000;
-    display: none; /* 默认隐藏 */
+    display: none;
     flex-direction: column;
-    gap: 12px;
+    gap: 8px;
     align-items: center;
 }
 
-#datetime-editor input, #datetime-editor select {
-    width: calc(100% - 16px);
-    margin: 6px 0;
-    padding: 8px;
+#datetime-editor h3 {
+    margin-bottom: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+    text-align: center;
+}
+
+.date-time-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 6px;
+}
+
+.date-time-row input {
+    width: 32%;
+    padding: 6px;
     border-radius: 8px;
     border: 1px solid #ccc;
-    font-size: 14px;
+    font-size: 12px;
     box-sizing: border-box;
 }
 
 #save-datetime {
     background-color: #007aff;
     color: #fff;
-    padding: 10px 20px;
+    padding: 8px 16px;
     border-radius: 12px;
     border: none;
     cursor: pointer;
@@ -183,12 +197,4 @@ h2 {
 #save-datetime:hover {
     background-color: #005bb5;
     transform: translateY(-1px);
-}
-
-#datetime-editor h3 {
-    margin-bottom: 8px;
-    font-size: 18px;
-    font-weight: 500;
-    color: #333;
-    text-align: center;
 }
