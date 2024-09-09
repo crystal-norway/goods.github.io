@@ -140,3 +140,53 @@ h2 {
 .delete-button:hover {
     background-color: darkred;
 }
+
+#datetime-editor {
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    width: 80%;
+    max-width: 500px;
+    padding: 24px;
+    box-sizing: border-box;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    display: none; /* 默认隐藏 */
+    flex-direction: column;
+    align-items: center;
+}
+
+#datetime-editor input, #datetime-editor select {
+    width: calc(100% - 20px);
+    margin: 8px 0;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+#save-datetime {
+    background-color: #007aff;
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out, transform 0.1s ease;
+}
+
+#save-datetime:hover {
+    background-color: #005bb5;
+    transform: translateY(-2px);
+}
+
+#datetime-editor h3 {
+    margin-bottom: 16px;
+    font-size: 20px;
+    font-weight: 500;
+    color: #333;
+}
