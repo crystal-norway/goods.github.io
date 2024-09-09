@@ -13,7 +13,6 @@ body {
 .container {
     background-color: #fff;
     border-radius: 16px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     width: 95%;
     max-width: 600px;
     padding: 24px;
@@ -41,13 +40,10 @@ h1 {
 }
 
 #buttonContainer {
-    position: sticky;
-    top: 0;
-    background-color: #fff;
-    padding: 12px 0;
-    text-align: center;
-    z-index: 1;
-    border-bottom: 1px solid #ccc;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
 }
 
 #eventsContainer {
@@ -117,7 +113,7 @@ h2 {
     align-items: center;
     line-height: 1;
     padding: 0;
-    border: none; /* 移除边框 */
+    border: none;
 }
 
 .circle-button:hover {
@@ -138,7 +134,7 @@ h2 {
     transition: background-color 0.2s ease-in-out;
     position: absolute;
     top: 8px;
-    right: 8px; /* 显示在右上角 */
+    right: 8px;
 }
 
 .delete-button:hover {
@@ -148,7 +144,6 @@ h2 {
 #datetime-editor {
     background-color: #fff;
     border-radius: 16px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     width: 80%;
     max-width: 350px;
     padding: 12px;
