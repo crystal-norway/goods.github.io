@@ -35,34 +35,15 @@ document.addEventListener('DOMContentLoaded', function () {
         editButton.innerText = '✏️';
         editButton.className = 'edit-button';
         editButton.addEventListener('click', function () {
-            const newEventName = prompt('编辑事件名称:', eventNameSpan.innerText.replace('事件名称: ', ''));
-            const newStartTime = prompt('编辑开始时间 (格式: YYYY-MM-DD HH:MM:SS):', formatDateTime(startButton.getAttribute('data-startTime')));
-            const newEndTime = prompt('编辑结束时间 (格式: YYYY-MM-DD HH:MM:SS):', endTimestampSpan.innerText.replace('结束时间: ', ''));
-
-            if (newEventName && newStartTime && newEndTime) {
-                const startTime = new Date(newStartTime).getTime();
-                const endTime = new Date(newEndTime).getTime();
-
-                if (!isNaN(startTime) && !isNaN(endTime) && startTime < endTime) {
-                    eventNameSpan.innerText = `事件名称: ${newEventName}`;
-                    startTimestampSpan.innerText = `开始时间: ${formatDateTime(startTime)}`;
-                    endTimestampSpan.innerText = `结束时间: ${formatDateTime(endTime)}`;
-
-                    const timeDiff = (endTime - startTime) / 1000;
-                    timeDiffSpan.innerText = `时间差: ${formatTimeDiff(timeDiff)}`;
-
-                    updateEventInStorage(startButton.getAttribute('data-startTime'), {
-                        eventName: newEventName,
-                        startTime: startTime,
-                        endTime: endTime,
-                        timeDiff: timeDiff
-                    });
-
-                    startButton.setAttribute('data-startTime', startTime);
-                } else {
-                    alert('无效的时间输入或开始时间大于结束时间！');
-                }
-            }
+            const start = new Date(startButton.getAttribute('data-startTime'));
+            showDateTimeEditor(start, function(newStartTime) {
+                startTimestampSpan.innerText = `开始时间: ${formatDateTime(newStartTime.getTime())}`;
+                startButton.setAttribute('data-startTime', newStartTime.getTime());
+                updateEventInStorage(start.getTime(), {
+                    ...getEventFromStorage(start.getTime()),
+                    startTime: newStartTime.getTime()
+                });
+            });
         });
         eventNameContainer.appendChild(editButton);
 
@@ -245,4 +226,38 @@ document.addEventListener('DOMContentLoaded', function () {
         link.click();
         document.body.removeChild(link);
     }
+
+    function showDateTimeEditor(date, callback) {
+        const editor = document.getElementById('datetime-editor');
+        document.getElementById('year').value = date.getFullYear();
+        document.getElementById('month').value = date.getMonth() + 1;
+        document.getElementById('day').value = date.getDate();
+        document.getElementById('hour').value = date.getHours();
+        document.getElementById('minute').value = date.getMinutes();
+        document.getElementById('second').value = date.getSeconds();
+        
+        editor.style.display = 'block';
+        
+        document.getElementById('save-datetime').onclick = function() {
+            const newYear = document.getElementById('year').value;
+            const newMonth = document.getElementById('month').value - 1;
+            const newDay = document.getElementById('day').value;
+            const newHour = document.getElementById('hour').value;
+            const newMinute = document.getElementById('minute').value;
+            const newSecond = document.getElementById('second').value;
+            
+            const newDate = new Date(newYear, newMonth, newDay, newHour, newMinute, newSecond);
+            if (!isNaN(newDate.getTime())) {
+                callback(newDate);
+                editor.style.display = 'none';
+            } else {
+                alert('无效的时间输入！');
+            }
+        };
+    }
 });
+
+function getEventFromStorage(startTime) {
+    const events = JSON.parse(localStorage.getItem('events')) || [];
+    return events.find(event => event.startTime === startTime);
+}
