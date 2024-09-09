@@ -290,3 +290,16 @@ document.addEventListener('DOMContentLoaded', function () {
         };
     }
 });
+document.addEventListener('DOMContentLoaded', function() {
+    console.log(document.getElementById('clearAllButton'));
+    console.log(document.getElementById('exportButton'));
+
+    document.getElementById('clearAllButton').addEventListener('click', function() {
+        localStorage.clear();
+        location.reload();
+    });
+
+    document.getElementById('exportButton').addEventListener('click', function() {
+        exportDataToCSV();
+    });
+});
