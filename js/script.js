@@ -205,6 +205,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function exportDataToCSV() {
+        console.log('导出数据开始');
+
         const events = JSON.parse(localStorage.getItem('events')) || [];
         if (events.length === 0) {
             alert('没有可导出的事件数据');
@@ -226,7 +228,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const year = now.getFullYear();
         const month = ('0' + (now.getMonth() + 1)).slice(-2);
         const day = ('0' + now.getDate()).slice(-2);
-        const formattedDate = `${year}.${month}.${day}`;
+        const formattedDate = `${year}-${month}-${day}`;
         
         const fileName = `events_${formattedDate}.csv`;
         link.download = fileName;
