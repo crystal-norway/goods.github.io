@@ -206,40 +206,40 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function exportDataToCSV() {
-        console.log('导出数据开始');
+    const events = JSON.parse(localStorage.getItem('events')) || [];
+    if (events.length === 0) {
+        alert('没有可导出的事件数据');
+        return;
+    }
 
-        const events = JSON.parse(localStorage.getItem('events')) || [];
-        if (events.length === 0) {
-            alert('没有可导出的事件数据');
-            return;
-        }
+    let csvContent = "事件名称,开始时间,结束时间,时间差\n";
+    events.forEach(event => {
+        const startTime = formatDateTime(event.startTime);
+        const endTime = event.endTime ? formatDateTime(event.endTime) : '';
+        const timeDiff = event.timeDiff ? formatTimeDiff(event.timeDiff) : '';
+        csvContent += `${event.eventName},${startTime},${endTime},${timeDiff}\n`;
+    });
 
-        let csvContent = "事件名称,开始时间,结束时间,时间差\n";
-        events.forEach(event => {
-            const startTime = formatDateTime(event.startTime);
-            const endTime = event.endTime ? formatDateTime(event.endTime) : '';
-            const timeDiff = event.timeDiff ? formatTimeDiff(event.timeDiff) : '';
-            csvContent += `${event.eventName},${startTime},${endTime},${timeDiff}\n`;
-        });
-
+    try {
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement('a');
-
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = ('0' + (now.getMonth() + 1)).slice(-2);
-        const day = ('0' + now.getDate()).slice(-2);
-        const formattedDate = `${year}-${month}-${day}`;
+        const url = URL.createObjectURL(blob);
         
-        const fileName = `events_${formattedDate}.csv`;
-        link.download = fileName;
-
-        link.href = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `events_${new Date().toISOString().substring(0, 10)}.csv`);
         link.style.display = 'none';
+        
         document.body.appendChild(link);
         link.click();
+        
+        // 释放URL对象
+        URL.revokeObjectURL(url);
+        
         document.body.removeChild(link);
+    } catch (error) {
+        console.error('导出CSV失败:', error);
     }
+}
 
     function showDateTimeEditor(eventName, start, end, callback) {
         const editor = document.getElementById('datetime-editor');
