@@ -39,6 +39,13 @@ h1 {
     color: #777;
 }
 
+#buttonContainer {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
 #announcement {
     position: relative;
     background-color: #f5f5f5;
@@ -48,10 +55,6 @@ h1 {
 }
 
 #addEventButton {
-    position: absolute;
-    top: 50%;
-    right: 10px;
-    transform: translateY(-50%);
     background-color: #007aff;
     color: #fff;
     width: 50px;
@@ -64,7 +67,7 @@ h1 {
     line-height: 1;
     padding: 0;
     border: none;
-    z-index: 1000;
+    transition: background-color 0.2s ease-in-out, transform 0.1s ease;
 }
 
 #addEventButton:hover {
