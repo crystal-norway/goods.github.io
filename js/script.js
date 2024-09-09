@@ -46,6 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const timeDiff = (newEndTime.getTime() - newStartTime.getTime()) / 1000;
                 timeDiffSpan.innerText = `时间差: ${formatTimeDiff(timeDiff)}`;
 
+                // 更新事件的当前信息
                 currentStartTime = newStartTime;
                 currentEndTime = newEndTime;
                 eventName = newEventName;
