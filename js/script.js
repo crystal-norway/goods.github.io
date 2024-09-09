@@ -35,15 +35,15 @@ document.addEventListener('DOMContentLoaded', function () {
         editButton.innerText = '✏️';
         editButton.className = 'edit-button';
         editButton.addEventListener('click', function () {
-            const start = new Date(startButton.getAttribute('data-startTime'));
-            const end = new Date(endTimestampSpan.innerText.replace('结束时间: ', ''));
+            const start = startTime ? new Date(startTime) : new Date();
+            const end = endTime ? new Date(endTime) : new Date();
             showDateTimeEditor(eventName, start, end, function(newEventName, newStartTime, newEndTime) {
                 eventNameSpan.innerText = `事件名称: ${newEventName}`;
                 startTimestampSpan.innerText = `开始时间: ${formatDateTime(newStartTime.getTime())}`;
                 endTimestampSpan.innerText = `结束时间: ${formatDateTime(newEndTime.getTime())}`;
                 const timeDiff = (newEndTime.getTime() - newStartTime.getTime()) / 1000;
                 timeDiffSpan.innerText = `时间差: ${formatTimeDiff(timeDiff)}`;
-                updateEventInStorage(start.getTime(), {
+                updateEventInStorage(startTime, {
                     eventName: newEventName,
                     startTime: newStartTime.getTime(),
                     endTime: newEndTime.getTime(),
@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function () {
         deleteButton.textContent = '✖';
         deleteButton.addEventListener('click', function () {
             eventsContainer.removeChild(eventContainer);
-            removeEvent(startButton.getAttribute('data-startTime'));
+            removeEvent(startTime);
         });
         eventContainer.appendChild(deleteButton);
 
@@ -99,7 +99,6 @@ document.addEventListener('DOMContentLoaded', function () {
             startButton.disabled = true;
             startTimestampSpan.innerText = `开始时间: ${formatDateTime(startTime)}`;
             endButton.disabled = false;
-            startButton.setAttribute('data-startTime', startTime);
         }
 
         if (endTime) {
@@ -109,17 +108,15 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         startButton.addEventListener('click', function () {
-            const startTime = new Date().getTime();
+            startTime = new Date().getTime();
             startButton.disabled = true;
             startTimestampSpan.innerText = `开始时间: ${formatDateTime(startTime)}`;
             endButton.disabled = false;
-            startButton.setAttribute('data-startTime', startTime);
             saveEvent({ eventName: eventName, startTime: startTime });
         });
 
         endButton.addEventListener('click', function () {
             const endTime = new Date().getTime();
-            const startTime = parseInt(startButton.getAttribute('data-startTime'));
             const timeDiff = (endTime - startTime) / 1000;
             endButton.disabled = true;
             endTimestampSpan.innerText = `结束时间: ${formatDateTime(endTime)}`;
@@ -169,14 +166,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function removeEvent(startTime) {
         let events = JSON.parse(localStorage.getItem('events')) || [];
-        events = events.filter(event => event.startTime !== parseInt(startTime));
+        events = events.filter(event => event.startTime !== startTime);
         localStorage.setItem('events', JSON.stringify(events));
     }
 
     function updateEventInStorage(originalStartTime, updatedEvent) {
         let events = JSON.parse(localStorage.getItem('events')) || [];
         events = events.map(event => {
-            if (event.startTime === parseInt(originalStartTime)) {
+            if (event.startTime === originalStartTime) {
                 return updatedEvent;
             }
             return event;
@@ -243,7 +240,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('start-hour').value = start.getHours();
         document.getElementById('start-minute').value = start.getMinutes();
         document.getElementById('start-second').value = start.getSeconds();
-        
+
         document.getElementById('end-year').value = end.getFullYear();
         document.getElementById('end-month').value = end.getMonth() + 1;
         document.getElementById('end-day').value = end.getDate();
@@ -269,7 +266,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const newEndHour = document.getElementById('end-hour').value;
             const newEndMinute = document.getElementById('end-minute').value;
             const newEndSecond = document.getElementById('end-second').value;
-            
+
             const newStartTime = new Date(newStartYear, newStartMonth, newStartDay, newStartHour, newStartMinute, newStartSecond);
             const newEndTime = new Date(newEndYear, newEndMonth, newEndDay, newEndHour, newEndMinute, newEndSecond);
             
@@ -282,8 +279,3 @@ document.addEventListener('DOMContentLoaded', function () {
         };
     }
 });
-
-function getEventFromStorage(startTime) {
-    const events = JSON.parse(localStorage.getItem('events')) || [];
-    return events.find(event => event.startTime === startTime);
-}
