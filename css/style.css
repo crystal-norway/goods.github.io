@@ -46,14 +46,6 @@ h1 {
     z-index: 1000;
 }
 
-#announcement {
-    position: relative;
-    background-color: #f5f5f5;
-    padding: 20px;
-    border-radius: 12px;
-    margin-bottom: 20px;
-}
-
 #addEventButton {
     background-color: #007aff;
     color: #fff;
@@ -131,7 +123,7 @@ h2 {
     transform: translateY(-2px);
 }
 
-.delete-button {
+.delete-button, .edit-button {
     background-color: red;
     color: #fff;
     width: 30px;
@@ -141,7 +133,6 @@ h2 {
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    transition: background-color 0.2s ease-in-out;
     position: absolute;
     top: 8px;
     right: 8px;
@@ -149,6 +140,15 @@ h2 {
 
 .delete-button:hover {
     background-color: darkred;
+}
+
+.edit-button {
+    background-color: #333;
+    right: 48px;
+}
+
+.edit-button:hover {
+    background-color: #555;
 }
 
 #datetime-editor {
