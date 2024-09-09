@@ -29,22 +29,30 @@
         </footer>
     </div>
 
-    <div id="datetime-editor" style="display: none;">
+    <div id="datetime-editor">
         <input type="text" id="edit-event-name" placeholder="事件名称">
         <div>开始时间:</div>
-        <input type="number" id="start-year" min="1900" max="2100">
-        <input type="number" id="start-month" min="1" max="12">
-        <input type="number" id="start-day" min="1" max="31">
-        <input type="number" id="start-hour" min="0" max="23">
-        <input type="number" id="start-minute" min="0" max="59">
-        <input type="number" id="start-second" min="0" max="59">
+        <div class="date-time-row">
+            <input type="number" id="start-year" placeholder="年" min="1900" max="2100">
+            <input type="number" id="start-month" placeholder="月" min="1" max="12">
+            <input type="number" id="start-day" placeholder="日" min="1" max="31">
+        </div>
+        <div class="date-time-row">
+            <input type="number" id="start-hour" placeholder="时" min="0" max="23">
+            <input type="number" id="start-minute" placeholder="分" min="0" max="59">
+            <input type="number" id="start-second" placeholder="秒" min="0" max="59">
+        </div>
         <div>结束时间:</div>
-        <input type="number" id="end-year" min="1900" max="2100">
-        <input type="number" id="end-month" min="1" max="12">
-        <input type="number" id="end-day" min="1" max="31">
-        <input type="number" id="end-hour" min="0" max="23">
-        <input type="number" id="end-minute" min="0" max="59">
-        <input type="number" id="end-second" min="0" max="59">
+        <div class="date-time-row">
+            <input type="number" id="end-year" placeholder="年" min="1900" max="2100">
+            <input type="number" id="end-month" placeholder="月" min="1" max="12">
+            <input type="number" id="end-day" placeholder="日" min="1" max="31">
+        </div>
+        <div class="date-time-row">
+            <input type="number" id="end-hour" placeholder="时" min="0" max="23">
+            <input type="number" id="end-minute" placeholder="分" min="0" max="59">
+            <input type="number" id="end-second" placeholder="秒" min="0" max="59">
+        </div>
         <button id="save-datetime">保存</button>
     </div>
 
