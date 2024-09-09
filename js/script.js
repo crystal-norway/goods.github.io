@@ -10,10 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    document.getElementById('clearButton').addEventListener('click', function () {
-        localStorage.removeItem('announcement');
-        document.getElementById('announcedData').innerText = '';
-    });
+   
 
    document.getElementById('clearAllButton').addEventListener('click', function () {
         localStorage.clear();
