@@ -6,7 +6,8 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('addEventButton').addEventListener('click', function () {
         const eventName = prompt('请输入事件名称:');
         if (eventName) {
-            addNewEvent(eventName);
+            const note = prompt('请输入备注:');
+            addNewEvent(eventName, null, null, null, note);
         }
     });
 
@@ -25,10 +26,14 @@ document.addEventListener('DOMContentLoaded', function () {
     
         const eventNameContainer = document.createElement('div');
         eventNameContainer.className = 'event-name-container';
-    
+
+        const noteContainer = document.createElement('div');
+        noteContainer.className = 'note-container';
+         
         const editButton = document.createElement('button');
         editButton.innerText = '✏️';
         editButton.className = 'edit-button';
+        eventNameContainer.appendChild(editButton);
     
         let currentStartTime = startTime ? new Date(startTime) : new Date();
         let currentEndTime = endTime ? new Date(endTime) : new Date();
@@ -67,8 +72,9 @@ document.addEventListener('DOMContentLoaded', function () {
     
         const noteSpan = document.createElement('span');
         noteSpan.innerText = `备注: ${note}`;
-        eventContainer.appendChild(noteSpan);
-
+        noteContainer.appendChild(noteSpan);
+        eventContainer.appendChild(noteContainer);
+         
         const startButton = document.createElement('button');
         startButton.innerText = '开始';
         startButton.style.marginLeft = '10px';
@@ -155,10 +161,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function loadEvents() {
         const events = JSON.parse(localStorage.getItem('events')) || [];
-        events.forEach(event => addNewEvent(event.eventName, event.startTime, event.endTime, event.timeDiff));
+        events.forEach(event => addNewEvent(event.eventName, event.startTime, event.endTime, event.timeDiff, event.note));
     }
 
-    function saveEvent(event) {
+
+   function saveEvent(event) {
         const events = JSON.parse(localStorage.getItem('events')) || [];
         events.push(event);
         localStorage.setItem('events', JSON.stringify(events));
