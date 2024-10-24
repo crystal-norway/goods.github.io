@@ -165,6 +165,7 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log('事件已保存:', event);
     }
 
+
     function removeEvent(startTime) {
         let events = JSON.parse(localStorage.getItem('events')) || [];
         events = events.filter(event => event.startTime !== startTime);
