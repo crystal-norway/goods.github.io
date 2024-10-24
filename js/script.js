@@ -41,12 +41,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 const timeDiff = (newEndTime.getTime() - newStartTime.getTime()) / 1000;
                 timeDiffSpan.innerText = `时间差: ${formatTimeDiff(timeDiff)}`;
 
-                // 更新事件的当前信息
                 currentStartTime = newStartTime;
                 currentEndTime = newEndTime;
                 eventName = newEventName;
 
-                updateEventInStorage(currentStartTime.getTime(), {
+                updateEventInStorage(newStartTime.getTime(), {
                     eventName: newEventName,
                     startTime: newStartTime.getTime(),
                     endTime: newEndTime.getTime(),
@@ -90,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function () {
         deleteButton.className = 'delete-button';
         deleteButton.textContent = '✖';
         deleteButton.addEventListener('click', function () {
-            eventsContainer.removeChild(eventContainer);
+            document.getElementById('eventsContainer').removeChild(eventContainer);
             removeEvent(currentStartTime.getTime());
         });
         eventContainer.appendChild(deleteButton);
@@ -152,18 +151,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function saveEvent(event) {
         const events = JSON.parse(localStorage.getItem('events')) || [];
-        const updatedEvents = events.map(evt => {
-            if (evt.startTime === event.startTime) {
-                return event;
-            }
-            return evt;
-        });
-
-        if (!updatedEvents.some(evt => evt.startTime === event.startTime)) {
-            updatedEvents.push(event);
+        const existingIndex = events.findIndex(evt => evt.startTime === event.startTime);
+        if (existingIndex !== -1) {
+            events[existingIndex] = event;
+        } else {
+            events.push(event);
         }
 
-        localStorage.setItem('events', JSON.stringify(updatedEvents));
+        localStorage.setItem('events', JSON.stringify(events));
         console.log('事件已保存:', event);
     }
 
@@ -176,12 +171,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function updateEventInStorage(originalStartTime, updatedEvent) {
         let events = JSON.parse(localStorage.getItem('events')) || [];
-        events = events.map(event => {
-            if (event.startTime === originalStartTime) {
-                return updatedEvent;
-            }
-            return event;
-        });
+        const existingIndex = events.findIndex(event => event.startTime === originalStartTime);
+        if (existingIndex !== -1) {
+            events[existingIndex] = updatedEvent;
+        }
         localStorage.setItem('events', JSON.stringify(events));
         console.log('事件已更新:', updatedEvent);
     }
