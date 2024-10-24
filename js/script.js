@@ -10,17 +10,14 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-   
-
-   document.getElementById('clearAllButton').addEventListener('click', function () {
+    document.getElementById('clearAllButton').addEventListener('click', function () {
         localStorage.clear();
         location.reload();
     });
-    
+
     document.getElementById('exportButton').addEventListener('click', function () {
         exportDataToCSV();
     });
-
 
     function addNewEvent(eventName, startTime, endTime, timeDiff) {
         const eventContainer = document.createElement('div');
@@ -49,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 currentEndTime = newEndTime;
                 eventName = newEventName;
 
-                updateEventInStorage(startTime, {
+                updateEventInStorage(currentStartTime.getTime(), {
                     eventName: newEventName,
                     startTime: newStartTime.getTime(),
                     endTime: newEndTime.getTime(),
@@ -62,7 +59,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const eventNameSpan = document.createElement('span');
         eventNameSpan.innerText = `事件名称: ${eventName}`;
         eventNameContainer.appendChild(eventNameSpan);
-
         eventContainer.appendChild(eventNameContainer);
 
         const startButton = document.createElement('button');
@@ -95,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function () {
         deleteButton.textContent = '✖';
         deleteButton.addEventListener('click', function () {
             eventsContainer.removeChild(eventContainer);
-            removeEvent(startTime);
+            removeEvent(currentStartTime.getTime());
         });
         eventContainer.appendChild(deleteButton);
 
@@ -168,12 +164,14 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         localStorage.setItem('events', JSON.stringify(updatedEvents));
+        console.log('事件已保存:', event);
     }
 
     function removeEvent(startTime) {
         let events = JSON.parse(localStorage.getItem('events')) || [];
         events = events.filter(event => event.startTime !== startTime);
         localStorage.setItem('events', JSON.stringify(events));
+        console.log('事件已删除:', startTime);
     }
 
     function updateEventInStorage(originalStartTime, updatedEvent) {
@@ -185,6 +183,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return event;
         });
         localStorage.setItem('events', JSON.stringify(events));
+        console.log('事件已更新:', updatedEvent);
     }
 
     function loadAnnouncement() {
@@ -203,45 +202,43 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function exportDataToCSV() {
-    const events = JSON.parse(localStorage.getItem('events')) || [];
-    if (events.length === 0) {
-        alert('没有可导出的事件数据');
-        return;
-    }
+        const events = JSON.parse(localStorage.getItem('events')) || [];
+        if (events.length === 0) {
+            alert('没有可导出的事件数据');
+            return;
+        }
 
-    let csvContent = "事件名称,开始时间,结束时间,时间差\n";
-    events.forEach(event => {
-        const startTime = formatDateTime(event.startTime);
-        const endTime = event.endTime ? formatDateTime(event.endTime) : '';
-        const timeDiff = event.timeDiff ? formatTimeDiff(event.timeDiff) : '';
-        csvContent += `${event.eventName},${startTime},${endTime},${timeDiff}\n`;
-    });
+        let csvContent = "事件名称,开始时间,结束时间,时间差\n";
+        events.forEach(event => {
+            const startTime = formatDateTime(event.startTime);
+            const endTime = event.endTime ? formatDateTime(event.endTime) : '';
+            const timeDiff = event.timeDiff ? formatTimeDiff(event.timeDiff) : '';
+            csvContent += `${event.eventName},${startTime},${endTime},${timeDiff}\n`;
+        });
 
-    try {
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement('a');
-        const url = URL.createObjectURL(blob);
-        
-        link.setAttribute('href', url);
-        link.setAttribute('download', `events_${new Date().toISOString().substring(0, 10)}.csv`);
-        link.style.display = 'none';
-        
-        document.body.appendChild(link);
-        link.click();
-        
-        // 释放URL对象
-        URL.revokeObjectURL(url);
-        
-        document.body.removeChild(link);
-    } catch (error) {
-        console.error('导出CSV失败:', error);
+        try {
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', `events_${new Date().toISOString().substring(0, 10)}.csv`);
+            link.style.display = 'none';
+
+            document.body.appendChild(link);
+            link.click();
+
+            URL.revokeObjectURL(url);
+            document.body.removeChild(link);
+        } catch (error) {
+            console.error('导出CSV失败:', error);
+        }
     }
-}
 
     function showDateTimeEditor(eventName, start, end, callback) {
         const editor = document.getElementById('datetime-editor');
         document.getElementById('edit-event-name').value = eventName;
-        
+
         document.getElementById('start-year').value = start.getFullYear();
         document.getElementById('start-month').value = start.getMonth() + 1;
         document.getElementById('start-day').value = start.getDate();
@@ -255,19 +252,19 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('end-hour').value = end.getHours();
         document.getElementById('end-minute').value = end.getMinutes();
         document.getElementById('end-second').value = end.getSeconds();
-        
+
         editor.style.display = 'block';
-        
+
         document.getElementById('save-datetime').onclick = function() {
             const newEventName = document.getElementById('edit-event-name').value;
-            
+
             const newStartYear = document.getElementById('start-year').value;
             const newStartMonth = document.getElementById('start-month').value - 1;
             const newStartDay = document.getElementById('start-day').value;
             const newStartHour = document.getElementById('start-hour').value;
             const newStartMinute = document.getElementById('start-minute').value;
             const newStartSecond = document.getElementById('start-second').value;
-            
+
             const newEndYear = document.getElementById('end-year').value;
             const newEndMonth = document.getElementById('end-month').value - 1;
             const newEndDay = document.getElementById('end-day').value;
@@ -277,7 +274,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const newStartTime = new Date(newStartYear, newStartMonth, newStartDay, newStartHour, newStartMinute, newStartSecond);
             const newEndTime = new Date(newEndYear, newEndMonth, newEndDay, newEndHour, newEndMinute, newEndSecond);
-            
+
             if (!isNaN(newStartTime.getTime()) && !isNaN(newEndTime.getTime()) && newStartTime < newEndTime) {
                 callback(newEventName, newStartTime, newEndTime);
                 editor.style.display = 'none';
@@ -286,17 +283,4 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         };
     }
-});
-document.addEventListener('DOMContentLoaded', function() {
-    console.log(document.getElementById('clearAllButton'));
-    console.log(document.getElementById('exportButton'));
-
-    document.getElementById('clearAllButton').addEventListener('click', function() {
-        localStorage.clear();
-        location.reload();
-    });
-
-    document.getElementById('exportButton').addEventListener('click', function() {
-        exportDataToCSV();
-    });
 });
