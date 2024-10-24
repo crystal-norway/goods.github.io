@@ -41,11 +41,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 const timeDiff = (newEndTime.getTime() - newStartTime.getTime()) / 1000;
                 timeDiffSpan.innerText = `时间差: ${formatTimeDiff(timeDiff)}`;
 
+                removeEvent(currentStartTime.getTime());
+
                 currentStartTime = newStartTime;
                 currentEndTime = newEndTime;
                 eventName = newEventName;
 
-                updateEventInStorage(eventName, {
+                saveEvent({
                     eventName: newEventName,
                     startTime: newStartTime.getTime(),
                     endTime: newEndTime.getTime(),
@@ -151,13 +153,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function saveEvent(event) {
         const events = JSON.parse(localStorage.getItem('events')) || [];
-        const existingIndex = events.findIndex(evt => evt.eventName === event.eventName && evt.startTime === event.startTime);
-        if (existingIndex !== -1) {
-            events[existingIndex] = event;
-        } else {
-            events.push(event);
-        }
-
+        events.push(event);
         localStorage.setItem('events', JSON.stringify(events));
         console.log('事件已保存:', event);
     }
@@ -167,18 +163,6 @@ document.addEventListener('DOMContentLoaded', function () {
         events = events.filter(event => event.startTime !== startTime);
         localStorage.setItem('events', JSON.stringify(events));
         console.log('事件已删除:', startTime);
-    }
-
-    function updateEventInStorage(originalStartTime, updatedEvent) {
-        let events = JSON.parse(localStorage.getItem('events')) || [];
-        const existingIndex = events.findIndex(event => event.startTime === originalStartTime);
-        if (existingIndex !== -1) {
-            events[existingIndex] = updatedEvent;
-        } else {
-            events.push(updatedEvent);
-        }
-        localStorage.setItem('events', JSON.stringify(events));
-        console.log('事件已更新:', updatedEvent);
     }
 
     function loadAnnouncement() {
