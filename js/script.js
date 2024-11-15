@@ -31,7 +31,7 @@
         const note = urlParams.get('note'); // 获取 note 参数
         const params = { eventName, note }; // 包含 eventName 和 note 的参数对象
         stateMachine.transition(action, params); // 调用状态机的转移方法
-    });
+    
 
 
 
