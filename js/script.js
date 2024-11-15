@@ -1,39 +1,36 @@
-    document.addEventListener('DOMContentLoaded', function () {
-        loadEvents();
-        loadAnnouncement();
-        updateTime();
-        
-        // 初始化状态机
-        const stateMachine = {
-            state: 'idle',
-            actions: {
-                study: handleStudyEvent // 可以继续添加其他动作
-            },
-            transition(action, params) {
-                if (action && this.actions[action]) { // 只有在 action 存在时才调用
-                    this.actions[action](params); // 传递参数以执行对应的操作
-                } else {
-                    console.log(`未处理的动作: ${action}`);
-                }
+document.addEventListener('DOMContentLoaded', function () {
+    loadEvents();
+    loadAnnouncement();
+    updateTime();
+
+    // 初始化状态机
+    const stateMachine = {
+        state: 'idle',
+        actions: {
+            study: handleStudyEvent // 可以继续添加其他动作
+        },
+        transition(action, params) {
+            if (action && this.actions[action]) { // 只有在 action 存在时才调用
+                this.actions[action](params); // 传递参数以执行对应的操作
+            } else {
+                console.log(`未处理的动作: ${action}`);
             }
-        };
-    
-        // 处理学习事件的函数
-        function handleStudyEvent(params) {
-            const { eventName, note } = params;
-            handleEvent(eventName, note); // 直接调用，不需要默认值
         }
-    
-        // 示例: 从 URL 中获取 action、eventName 和 note，并调用 transition 方法
-        const urlParams = new URLSearchParams(window.location.search);
-        const action = urlParams.get('action'); // 获取 action 参数
-        const eventName = urlParams.get('eventName'); // 获取 eventName 参数
-        const note = urlParams.get('note'); // 获取 note 参数
-        const params = { eventName, note }; // 包含 eventName 和 note 的参数对象
-        stateMachine.transition(action, params); // 调用状态机的转移方法
-    
+    };
 
+    // 处理学习事件的函数
+    function handleStudyEvent(params) {
+        const { eventName, note } = params;
+        handleEvent(eventName, note); // 直接调用，不需要默认值
+    }
 
+    // 示例: 从 URL 中获取 action、eventName 和 note，并调用 transition 方法
+    const urlParams = new URLSearchParams(window.location.search);
+    const action = urlParams.get('action'); // 获取 action 参数
+    const eventName = urlParams.get('eventName'); // 获取 eventName 参数
+    const note = urlParams.get('note'); // 获取 note 参数
+    const params = { eventName, note }; // 包含 eventName 和 note 的参数对象
+    stateMachine.transition(action, params); // 调用状态机的转移方法
 
     // 添加事件按钮点击事件
     document.getElementById('addEventButton').addEventListener('click', function () {
@@ -250,4 +247,4 @@
         link.click();
         document.body.removeChild(link);
     }
-});
+}); // 确保这里是 DOMContentLoaded 的结束
