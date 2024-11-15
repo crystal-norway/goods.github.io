@@ -250,27 +250,25 @@ document.addEventListener('DOMContentLoaded', function () {
                 break;
     
             case 'stop': // 停止所有计时
-                 // 跳转回主页面
-                window.location.href = 'https://crystal-norway.github.io/goods.github.io/';
                 const events = JSON.parse(localStorage.getItem('events')) || [];
                 const now = new Date().getTime(); // 当前时间作为结束时间
             
                 events.forEach(event => {
-                     currentEndTime = new Date();
-                    const timeDiff = (currentEndTime.getTime() - currentStartTime.getTime()) / 1000;
-                    endButton.disabled = true;
-                    endTimestampSpan.innerText = `结束时间: ${formatDateTime(currentEndTime.getTime())}`;
-                    timeDiffSpan.innerText = `时间差: ${formatTimeDiff(timeDiff)}`;
-                    saveEvent({ eventName: eventName, startTime: currentStartTime.getTime(), endTime: currentEndTime.getTime(), timeDiff: timeDiff, isRunning: false });  // 更新计时状态
-                    });
+                    if (event.isRunning) {
+                        event.endTime = now; // 更新事件的结束时间
+                        event.isRunning = false; // 更新计时状态
+                        event.timeDiff = (event.endTime - event.startTime) / 1000; // 计算时间差
+                    }
+                });
             
                 // 将更新后的事件数组保存回本地存储
                 localStorage.setItem('events', JSON.stringify(events));
                 alert('计时已停止');
-                
+            
                 // 跳转回主页面
                 window.location.href = 'https://crystal-norway.github.io/goods.github.io/';
                 break;
+
 
 
     
