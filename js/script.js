@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     loadAnnouncement();
     updateTime();
 
+    // 添加事件按钮点击事件
     document.getElementById('addEventButton').addEventListener('click', function () {
         const eventName = prompt('请输入事件名称:');
         if (eventName) {
@@ -11,11 +12,13 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    // 清除所有事件数据
     document.getElementById('clearAllButton').addEventListener('click', function () {
         localStorage.clear();
         location.reload();
     });
 
+    // 导出事件数据到CSV
     document.getElementById('exportButton').addEventListener('click', exportDataToCSV);
 
     function handleEvent(eventName, note) {
@@ -62,6 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
             `;
             document.getElementById('eventsContainer').appendChild(eventContainer);
 
+            // 编辑按钮事件
             eventContainer.querySelector('.edit-button').addEventListener('click', function () {
                 showDateTimeEditor(event.eventName, event.note, new Date(event.startTime), new Date(event.endTime), (newEventName, newNote, newStartTime, newEndTime) => {
                     event.eventName = newEventName;
@@ -75,6 +79,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             });
 
+            // 删除按钮事件
             eventContainer.querySelector('.delete-button').addEventListener('click', function () {
                 removeEvent(event.startTime);
                 loadEvents(); // 刷新事件显示
@@ -107,6 +112,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         editor.style.display = 'block';
 
+        // 保存时间按钮事件
         document.getElementById('save-datetime').onclick = function () {
             const newEventName = document.getElementById('edit-event-name').value;
             const newNote = editNoteInput.value;
