@@ -3,6 +3,13 @@ document.addEventListener('DOMContentLoaded', function () {
     loadAnnouncement();
     updateTime();
 
+    const urlParams = new URLSearchParams(window.location.search);
+    const action = urlParams.get('action');
+
+    if (action) {
+        handleAction(action);
+    }
+    
     document.getElementById('addEventButton').addEventListener('click', function () {
         const eventName = prompt('请输入事件名称:');
         if (eventName) {
@@ -229,7 +236,21 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error('导出CSV失败:', error);
         }
     }
+     function handleAction(action) {
+        switch (action) {
+            case 'addEvent':
+                const eventName = prompt('请输入事件名称:');
+                if (eventName) {
+                    const note = prompt('请输入备注:');
+                    addNewEvent(eventName, null, null, null, note);
+                }
+                break;
 
+            // 你可以添加其他操作的 case
+            default:
+                console.warn(`未定义的操作: ${action}`);
+        }
+    }
 
      function showDateTimeEditor(eventName, note, start, end, callback) {
         const editor = document.getElementById('datetime-editor');
