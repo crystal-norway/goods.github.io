@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <div>开始时间: ${formatDateTime(event.startTime)}</div>
                 ${event.isRunning ? '' : `<div>结束时间: ${formatDateTime(event.endTime)}</div>`}
                 ${event.timeDiff ? `<div>持续时间: ${formatTimeDiff(event.timeDiff)}</div>` : ''}
-                <button class="edit-button">编辑</button>
+                <button class="edit-button">✏️</button>
                 <button class="delete-button">✖</button>
             `;
             document.getElementById('eventsContainer').appendChild(eventContainer);
@@ -71,9 +71,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     event.eventName = newEventName;
                     event.note = newNote;
                     event.startTime = newStartTime.getTime();
-                    event.endTime = newEndTime.getTime();
-                    event.isRunning = false; // 根据需求，保存时标记为不正在进行
-                    event.timeDiff = (event.endTime - event.startTime) / 1000; // 计算持续时间
+                    event.endTime = newEndTime ? newEndTime.getTime() : null; // 确保结束时间可以为 null
+                    event.isRunning = false; // 更新为不在进行中
+                    event.timeDiff = event.endTime ? (event.endTime - event.startTime) / 1000 : null; // 计算持续时间
                     saveEvent(event);
                     loadEvents(); // 刷新事件显示
                 });
@@ -134,7 +134,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const newStartTime = new Date(newStartYear, newStartMonth, newStartDay, newStartHour, newStartMinute, newStartSecond);
             const newEndTime = new Date(newEndYear, newEndMonth, newEndDay, newEndHour, newEndMinute, newEndSecond);
 
-            if (!isNaN(newStartTime.getTime()) && !isNaN(newEndTime.getTime()) && newStartTime < newEndTime) {
+            // 输入合法性检查
+            if (!isNaN(newStartTime.getTime()) && (newEndTime ? !isNaN(newEndTime.getTime()) : true) && newStartTime <= (newEndTime || new Date())) {
                 callback(newEventName, newNote, newStartTime, newEndTime);
                 editor.style.display = 'none';
             } else {
