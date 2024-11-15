@@ -256,12 +256,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 const now = new Date().getTime(); // 当前时间作为结束时间
             
                 events.forEach(event => {
-                    if (event.isRunning) {
-                        const currentEndTime = now; // 设置结束时间
-                        event.endTime = currentEndTime; // 更新事件的结束时间
-                        event.timeDiff = (event.endTime - event.startTime) / 1000; // 计算时间差
-                    }
-                });
+                     currentEndTime = new Date();
+                    const timeDiff = (currentEndTime.getTime() - currentStartTime.getTime()) / 1000;
+                    endButton.disabled = true;
+                    endTimestampSpan.innerText = `结束时间: ${formatDateTime(currentEndTime.getTime())}`;
+                    timeDiffSpan.innerText = `时间差: ${formatTimeDiff(timeDiff)}`;
+                    saveEvent({ eventName: eventName, startTime: currentStartTime.getTime(), endTime: currentEndTime.getTime(), timeDiff: timeDiff, isRunning: false });  // 更新计时状态
+                    });
             
                 // 将更新后的事件数组保存回本地存储
                 localStorage.setItem('events', JSON.stringify(events));
