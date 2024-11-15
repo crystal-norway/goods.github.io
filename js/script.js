@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const stateMachine = {
         state: 'idle',
         actions: {
-            addevent: handleAddEvent,
+            
             study: handleStudyEvent // 可以继续添加其他动作
         },
         transition(action, params) {
