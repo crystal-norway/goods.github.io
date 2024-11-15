@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const noteContainer = document.createElement('div');
         noteContainer.className = 'note-container';
-         
+
         const editButton = document.createElement('button');
         editButton.innerText = '✏️';
         editButton.className = 'edit-button';
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
     
         let currentStartTime = startTime ? new Date(startTime) : new Date();
         let currentEndTime = endTime ? new Date(endTime) : new Date();
-        let isRunning = true;  // 新增属性，表示计时是否正在进行
+        let isRunning = (endTime === null);  // 新增属性，表示计时是否正在进行
 
         editButton.addEventListener('click', function () {
             showDateTimeEditor(eventName, note, currentStartTime, currentEndTime, function(newEventName, newNote, newStartTime, newEndTime) {
@@ -133,17 +133,15 @@ document.addEventListener('DOMContentLoaded', function () {
             timeDiffSpan.innerText = `时间差: ${formatTimeDiff(timeDiff)}`;
         }
 
-        let isRunning = (endTime === null);  // 新增属性，表示计时是否正在进行
-
         startButton.addEventListener('click', function () {
             currentStartTime = new Date();
             startButton.disabled = true;
             startTimestampSpan.innerText = `开始时间: ${formatDateTime(currentStartTime.getTime())}`;
             endButton.disabled = false;
             isRunning = true; // 更新计时状态
-            saveEvent({ eventName: eventName, startTime: currentStartTime.getTime(), isRunning: true });  
+            saveEvent({ eventName: eventName, startTime: currentStartTime.getTime(), isRunning: true });  // 更新计时状态
         });
-    
+
         endButton.addEventListener('click', function () {
             currentEndTime = new Date();
             const timeDiff = (currentEndTime.getTime() - currentStartTime.getTime()) / 1000;
@@ -151,9 +149,10 @@ document.addEventListener('DOMContentLoaded', function () {
             endTimestampSpan.innerText = `结束时间: ${formatDateTime(currentEndTime.getTime())}`;
             timeDiffSpan.innerText = `时间差: ${formatTimeDiff(timeDiff)}`;
             isRunning = false; // 更新计时状态
-            saveEvent({ eventName: eventName, startTime: currentStartTime.getTime(), endTime: currentEndTime.getTime(), timeDiff: timeDiff, isRunning: false });
+            saveEvent({ eventName: eventName, startTime: currentStartTime.getTime(), endTime: currentEndTime.getTime(), timeDiff: timeDiff, isRunning: false });  // 更新计时状态
         });
-}
+    }
+
     function formatDateTime(timestamp) {
         const date = new Date(timestamp);
         const year = date.getFullYear();
@@ -179,7 +178,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function saveEvent(event) {
         const events = JSON.parse(localStorage.getItem('events')) || [];
-        events.push(event);
+        const eventIndex = events.findIndex(e => e.startTime === event.startTime);
+        if (eventIndex > -1) {
+            events[eventIndex] = event; // 更新已存在的事件
+        } else {
+            events.push(event); // 添加新事件
+        }
         localStorage.setItem('events', JSON.stringify(events));
         console.log('事件已保存:', event);
     }
@@ -241,7 +245,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-   function handleAction(action) {
+    function handleAction(action) {
         switch (action) {
             case 'addEvent':
                 const eventName = prompt('请输入事件名称:');
@@ -251,11 +255,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     addNewEvent(eventName, startTime, null, null, note);
                 }
                 break;
-    
+
             case 'stop': // 停止所有计时
                 const events = JSON.parse(localStorage.getItem('events')) || [];
                 const now = new Date().getTime(); // 当前时间作为结束时间
-    
+
                 events.forEach(event => {
                     if (event.isRunning) {
                         event.endTime = now; // 更新事件的结束时间
@@ -263,22 +267,20 @@ document.addEventListener('DOMContentLoaded', function () {
                         event.timeDiff = (event.endTime - event.startTime) / 1000; // 计算时间差
                     }
                 });
-    
+
                 // 将更新后的事件数组保存回本地存储
                 localStorage.setItem('events', JSON.stringify(events));
                 alert('计时已停止');
-    
+
                 // 刷新事件显示
                 loadEvents(); // 确保事件显示更新
                 break;
-    
+
             // 其他操作的 case
             default:
                 console.warn(`未定义的操作: ${action}`);
         }
     }
-
-
 
     function showDateTimeEditor(eventName, note, start, end, callback) {
         const editor = document.getElementById('datetime-editor');
@@ -310,21 +312,21 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('save-datetime').onclick = function() {
             const newEventName = document.getElementById('edit-event-name').value;
             const newNote = document.getElementById('edit-note').value;
-    
+
             const newStartYear = document.getElementById('start-year').value;
             const newStartMonth = document.getElementById('start-month').value - 1;
             const newStartDay = document.getElementById('start-day').value;
             const newStartHour = document.getElementById('start-hour').value;
             const newStartMinute = document.getElementById('start-minute').value;
             const newStartSecond = document.getElementById('start-second').value;
-    
+
             const newEndYear = document.getElementById('end-year').value;
             const newEndMonth = document.getElementById('end-month').value - 1;
             const newEndDay = document.getElementById('end-day').value;
             const newEndHour = document.getElementById('end-hour').value;
             const newEndMinute = document.getElementById('end-minute').value;
             const newEndSecond = document.getElementById('end-second').value;
-    
+
             const newStartTime = new Date(newStartYear, newStartMonth, newStartDay, newStartHour, newStartMinute, newStartSecond);
             const newEndTime = new Date(newEndYear, newEndMonth, newEndDay, newEndHour, newEndMinute, newEndSecond);
     
