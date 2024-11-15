@@ -87,62 +87,71 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    function showDateTimeEditor(eventName, note, start, end, callback) {
+     function showDateTimeEditor(eventName, note, start, end, callback) {
         const editor = document.getElementById('datetime-editor');
-        document.getElementById('edit-event-name').value = eventName;
-
-        const editNoteInput = document.getElementById('edit-note');
-        editNoteInput.value = note;
-
-        document.getElementById('start-year').value = start.getFullYear();
-        document.getElementById('start-month').value = start.getMonth() + 1;
-        document.getElementById('start-day').value = start.getDate();
-        document.getElementById('start-hour').value = start.getHours();
-        document.getElementById('start-minute').value = start.getMinutes();
-        document.getElementById('start-second').value = start.getSeconds();
-
-        if (end) {
-            document.getElementById('end-year').value = end.getFullYear();
-            document.getElementById('end-month').value = end.getMonth() + 1;
-            document.getElementById('end-day').value = end.getDate();
-            document.getElementById('end-hour').value = end.getHours();
-            document.getElementById('end-minute').value = end.getMinutes();
-            document.getElementById('end-second').value = end.getSeconds();
-        }
-
-        editor.style.display = 'block';
-
-        // 保存时间按钮事件
-        document.getElementById('save-datetime').onclick = function () {
-            const newEventName = document.getElementById('edit-event-name').value;
-            const newNote = editNoteInput.value;
-
-            const newStartYear = document.getElementById('start-year').value;
-            const newStartMonth = document.getElementById('start-month').value - 1;
-            const newStartDay = document.getElementById('start-day').value;
-            const newStartHour = document.getElementById('start-hour').value;
-            const newStartMinute = document.getElementById('start-minute').value;
-            const newStartSecond = document.getElementById('start-second').value;
-
-            const newEndYear = document.getElementById('end-year').value;
-            const newEndMonth = document.getElementById('end-month').value - 1;
-            const newEndDay = document.getElementById('end-day').value;
-            const newEndHour = document.getElementById('end-hour').value;
-            const newEndMinute = document.getElementById('end-minute').value;
-            const newEndSecond = document.getElementById('end-second').value;
-
-            const newStartTime = new Date(newStartYear, newStartMonth, newStartDay, newStartHour, newStartMinute, newStartSecond);
-            const newEndTime = new Date(newEndYear, newEndMonth, newEndDay, newEndHour, newEndMinute, newEndSecond);
-
-            // 输入合法性检查
-            if (!isNaN(newStartTime.getTime()) && (newEndTime ? !isNaN(newEndTime.getTime()) : true) && newStartTime <= (newEndTime || new Date())) {
-                callback(newEventName, newNote, newStartTime, newEndTime);
-                editor.style.display = 'none';
-            } else {
-                alert('无效的时间输入或开始时间大于结束时间！');
+        
+        // 检查元素是否存在
+        if (editor) {
+            document.getElementById('edit-event-name').value = eventName;
+    
+            const editNoteInput = document.getElementById('edit-note');
+            if (editNoteInput) {
+                editNoteInput.value = note;
             }
-        };
+    
+            document.getElementById('start-year').value = start.getFullYear();
+            document.getElementById('start-month').value = start.getMonth() + 1;
+            document.getElementById('start-day').value = start.getDate();
+            document.getElementById('start-hour').value = start.getHours();
+            document.getElementById('start-minute').value = start.getMinutes();
+            document.getElementById('start-second').value = start.getSeconds();
+    
+            if (end) {
+                document.getElementById('end-year').value = end.getFullYear();
+                document.getElementById('end-month').value = end.getMonth() + 1;
+                document.getElementById('end-day').value = end.getDate();
+                document.getElementById('end-hour').value = end.getHours();
+                document.getElementById('end-minute').value = end.getMinutes();
+                document.getElementById('end-second').value = end.getSeconds();
+            }
+    
+            editor.style.display = 'block';
+    
+            // 保存时间按钮事件
+            document.getElementById('save-datetime').onclick = function () {
+                const newEventName = document.getElementById('edit-event-name').value;
+                const newNote = editNoteInput.value;
+    
+                const newStartYear = document.getElementById('start-year').value;
+                const newStartMonth = document.getElementById('start-month').value - 1;
+                const newStartDay = document.getElementById('start-day').value;
+                const newStartHour = document.getElementById('start-hour').value;
+                const newStartMinute = document.getElementById('start-minute').value;
+                const newStartSecond = document.getElementById('start-second').value;
+    
+                const newEndYear = document.getElementById('end-year').value;
+                const newEndMonth = document.getElementById('end-month').value - 1;
+                const newEndDay = document.getElementById('end-day').value;
+                const newEndHour = document.getElementById('end-hour').value;
+                const newEndMinute = document.getElementById('end-minute').value;
+                const newEndSecond = document.getElementById('end-second').value;
+    
+                const newStartTime = new Date(newStartYear, newStartMonth, newStartDay, newStartHour, newStartMinute, newStartSecond);
+                const newEndTime = new Date(newEndYear, newEndMonth, newEndDay, newEndHour, newEndMinute, newEndSecond);
+    
+                // 输入合法性检查
+                if (!isNaN(newStartTime.getTime()) && (newEndTime ? !isNaN(newEndTime.getTime()) : true) && newStartTime <= (newEndTime || new Date())) {
+                    callback(newEventName, newNote, newStartTime, newEndTime);
+                    editor.style.display = 'none';
+                } else {
+                    alert('无效的时间输入或开始时间大于结束时间！');
+                }
+            };
+        } else {
+            console.error('未找到 datetime-editor 元素');
+        }
     }
+
 
     function formatDateTime(timestamp) {
         const date = new Date(timestamp);
