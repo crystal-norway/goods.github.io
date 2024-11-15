@@ -10,13 +10,16 @@ document.addEventListener('DOMContentLoaded', function () {
         handleAction(action);
     }
     
-    document.getElementById('addEventButton').addEventListener('click', function () {
+   document.getElementById('addEventButton').addEventListener('click', function () {
         const eventName = prompt('请输入事件名称:');
         if (eventName) {
             const note = prompt('请输入备注:');
-            addNewEvent(eventName, null, null, null, note);
+            // 直接开始计时，设置开始时间为当前时间
+            const startTime = new Date().getTime();
+            addNewEvent(eventName, startTime, null, null, note);
         }
     });
+
 
     document.getElementById('clearAllButton').addEventListener('click', function () {
         localStorage.clear();
