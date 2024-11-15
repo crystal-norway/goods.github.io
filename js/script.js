@@ -74,6 +74,8 @@ document.addEventListener('DOMContentLoaded', function () {
         };
         saveEvent(newEvent);
         loadEvents(); // 刷新事件显示
+         // 跳转到指定 URL
+        window.location.href = 'https://crystal-norway.github.io/goods.github.io/';
     }
 
     function loadEvents() {
