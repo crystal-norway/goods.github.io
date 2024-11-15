@@ -133,24 +133,27 @@ document.addEventListener('DOMContentLoaded', function () {
             timeDiffSpan.innerText = `时间差: ${formatTimeDiff(timeDiff)}`;
         }
 
+        let isRunning = (endTime === null);  // 新增属性，表示计时是否正在进行
+
         startButton.addEventListener('click', function () {
             currentStartTime = new Date();
             startButton.disabled = true;
             startTimestampSpan.innerText = `开始时间: ${formatDateTime(currentStartTime.getTime())}`;
             endButton.disabled = false;
-            saveEvent({ eventName: eventName, startTime: currentStartTime.getTime(), isRunning: true });  // 更新计时状态
+            isRunning = true; // 更新计时状态
+            saveEvent({ eventName: eventName, startTime: currentStartTime.getTime(), isRunning: true });  
         });
-
+    
         endButton.addEventListener('click', function () {
             currentEndTime = new Date();
             const timeDiff = (currentEndTime.getTime() - currentStartTime.getTime()) / 1000;
             endButton.disabled = true;
             endTimestampSpan.innerText = `结束时间: ${formatDateTime(currentEndTime.getTime())}`;
             timeDiffSpan.innerText = `时间差: ${formatTimeDiff(timeDiff)}`;
-            saveEvent({ eventName: eventName, startTime: currentStartTime.getTime(), endTime: currentEndTime.getTime(), timeDiff: timeDiff, isRunning: false });  // 更新计时状态
+            isRunning = false; // 更新计时状态
+            saveEvent({ eventName: eventName, startTime: currentStartTime.getTime(), endTime: currentEndTime.getTime(), timeDiff: timeDiff, isRunning: false });
         });
-    }
-
+}
     function formatDateTime(timestamp) {
         const date = new Date(timestamp);
         const year = date.getFullYear();
@@ -238,7 +241,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function handleAction(action) {
+   function handleAction(action) {
         switch (action) {
             case 'addEvent':
                 const eventName = prompt('请输入事件名称:');
@@ -249,10 +252,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 break;
     
-           case 'stop': // 停止所有计时
+            case 'stop': // 停止所有计时
                 const events = JSON.parse(localStorage.getItem('events')) || [];
                 const now = new Date().getTime(); // 当前时间作为结束时间
-            
+    
                 events.forEach(event => {
                     if (event.isRunning) {
                         event.endTime = now; // 更新事件的结束时间
@@ -260,27 +263,21 @@ document.addEventListener('DOMContentLoaded', function () {
                         event.timeDiff = (event.endTime - event.startTime) / 1000; // 计算时间差
                     }
                 });
-            
+    
                 // 将更新后的事件数组保存回本地存储
                 localStorage.setItem('events', JSON.stringify(events));
                 alert('计时已停止');
-            
+    
                 // 刷新事件显示
                 loadEvents(); // 确保事件显示更新
-            
-                // 跳转回主页面
-                window.location.href = 'https://crystal-norway.github.io/goods.github.io/';
                 break;
-
-
-
-
     
             // 其他操作的 case
             default:
                 console.warn(`未定义的操作: ${action}`);
         }
     }
+
 
 
     function showDateTimeEditor(eventName, note, start, end, callback) {
