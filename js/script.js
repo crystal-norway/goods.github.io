@@ -248,21 +248,30 @@ document.addEventListener('DOMContentLoaded', function () {
                     addNewEvent(eventName, startTime, null, null, note);
                 }
                 break;
-
-            case 'stop': // 新增的 case
+    
+            case 'stop': // 停止所有计时
                 const events = JSON.parse(localStorage.getItem('events')) || [];
+                const now = new Date().getTime(); // 当前时间作为结束时间
                 events.forEach(event => {
-                    event.isRunning = false; // 停止所有计时
+                    if (event.isRunning) {
+                        event.endTime = now; // 设置结束时间
+                        event.isRunning = false; // 更新计时状态
+                        event.timeDiff = (event.endTime - event.startTime) / 1000; // 计算时间差
+                    }
                 });
+                // 将更新后的事件数组保存回本地存储
                 localStorage.setItem('events', JSON.stringify(events));
                 alert('所有计时已停止');
+                // 刷新事件显示
+                loadEvents();
                 break;
-
-            // 你可以添加其他操作的 case
+    
+            // 其他操作的 case
             default:
                 console.warn(`未定义的操作: ${action}`);
         }
     }
+
 
     function showDateTimeEditor(eventName, note, start, end, callback) {
         const editor = document.getElementById('datetime-editor');
