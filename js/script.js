@@ -250,6 +250,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 break;
     
             case 'stop': // 停止所有计时
+                 // 跳转回主页面
+                window.location.href = 'https://crystal-norway.github.io/goods.github.io/';
                 const events = JSON.parse(localStorage.getItem('events')) || [];
                 const now = new Date().getTime(); // 当前时间作为结束时间
             
@@ -257,7 +259,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (event.isRunning) {
                         const currentEndTime = now; // 设置结束时间
                         event.endTime = currentEndTime; // 更新事件的结束时间
-                        event.isRunning = false; // 更新计时状态
                         event.timeDiff = (event.endTime - event.startTime) / 1000; // 计算时间差
                     }
                 });
