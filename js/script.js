@@ -2,6 +2,35 @@ document.addEventListener('DOMContentLoaded', function () {
     loadEvents();
     loadAnnouncement();
     updateTime();
+    // 初始化状态机
+    const stateMachine = {
+        state: 'idle',
+        actions: {
+            addevent: handleAddEvent,
+            study: handleStudyEvent // 可以继续添加其他动作
+        },
+        transition(action, params) {
+            if (this.actions[action]) {
+                this.actions[action](params); // 传递参数以执行对应的操作
+            } else {
+                console.log(`未处理的动作: ${action}`);
+            }
+        }
+    };
+    // 处理学习事件的函数
+    function handleStudyEvent(params) {
+        const { eventName, note } = params;
+        handleEvent(eventName || "学习", note || "默认为学习"); // 默认值
+    }
+    // 示例: 从 URL 中获取 action、eventName 和 note，并调用 transition 方法
+    const urlParams = new URLSearchParams(window.location.search);
+    const action = urlParams.get('action') || 'study'; // 默认动作为 study
+    const eventName = urlParams.get('eventName'); // 获取 eventName 参数
+    const note = urlParams.get('note'); // 获取 note 参数
+    const params = { eventName, note }; // 包含 eventName 和 note 的参数对象
+    stateMachine.transition(action, params); // 调用状态机的转移方法
+    
+
 
     // 添加事件按钮点击事件
     document.getElementById('addEventButton').addEventListener('click', function () {
