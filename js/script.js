@@ -10,16 +10,14 @@ document.addEventListener('DOMContentLoaded', function () {
         handleAction(action);
     }
     
-   document.getElementById('addEventButton').addEventListener('click', function () {
+    document.getElementById('addEventButton').addEventListener('click', function () {
         const eventName = prompt('请输入事件名称:');
         if (eventName) {
             const note = prompt('请输入备注:');
-            // 直接开始计时，设置开始时间为当前时间
             const startTime = new Date().getTime();
             addNewEvent(eventName, startTime, null, null, note);
         }
     });
-
 
     document.getElementById('clearAllButton').addEventListener('click', function () {
         localStorage.clear();
@@ -30,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
         exportDataToCSV();
     });
 
-     function addNewEvent(eventName, startTime, endTime, timeDiff, note = '') {
+    function addNewEvent(eventName, startTime, endTime, timeDiff, note = '') {
         const eventContainer = document.createElement('div');
         eventContainer.className = 'event';
     
@@ -47,7 +45,8 @@ document.addEventListener('DOMContentLoaded', function () {
     
         let currentStartTime = startTime ? new Date(startTime) : new Date();
         let currentEndTime = endTime ? new Date(endTime) : new Date();
-    
+        let isRunning = true;  // 新增属性，表示计时是否正在进行
+
         editButton.addEventListener('click', function () {
             showDateTimeEditor(eventName, note, currentStartTime, currentEndTime, function(newEventName, newNote, newStartTime, newEndTime) {
                 eventNameSpan.innerText = `事件名称: ${newEventName}`;
@@ -69,7 +68,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     startTime: newStartTime.getTime(),
                     endTime: newEndTime.getTime(),
                     timeDiff: timeDiff,
-                    note: newNote
+                    note: newNote,
+                    isRunning: false  // 更新计时状态
                 });
             });
         });
@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function () {
             startButton.disabled = true;
             startTimestampSpan.innerText = `开始时间: ${formatDateTime(currentStartTime.getTime())}`;
             endButton.disabled = false;
-            saveEvent({ eventName: eventName, startTime: currentStartTime.getTime() });
+            saveEvent({ eventName: eventName, startTime: currentStartTime.getTime(), isRunning: true });  // 更新计时状态
         });
 
         endButton.addEventListener('click', function () {
@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function () {
             endButton.disabled = true;
             endTimestampSpan.innerText = `结束时间: ${formatDateTime(currentEndTime.getTime())}`;
             timeDiffSpan.innerText = `时间差: ${formatTimeDiff(timeDiff)}`;
-            saveEvent({ eventName: eventName, startTime: currentStartTime.getTime(), endTime: currentEndTime.getTime(), timeDiff: timeDiff });
+            saveEvent({ eventName: eventName, startTime: currentStartTime.getTime(), endTime: currentEndTime.getTime(), timeDiff: timeDiff, isRunning: false });  // 更新计时状态
         });
     }
 
@@ -174,14 +174,12 @@ document.addEventListener('DOMContentLoaded', function () {
         events.forEach(event => addNewEvent(event.eventName, event.startTime, event.endTime, event.timeDiff, event.note));
     }
 
-
-   function saveEvent(event) {
+    function saveEvent(event) {
         const events = JSON.parse(localStorage.getItem('events')) || [];
         events.push(event);
         localStorage.setItem('events', JSON.stringify(events));
         console.log('事件已保存:', event);
     }
-
 
     function removeEvent(startTime) {
         let events = JSON.parse(localStorage.getItem('events')) || [];
@@ -211,7 +209,7 @@ document.addEventListener('DOMContentLoaded', function () {
             alert('没有可导出的事件数据');
             return;
         }
-    
+
         let csvContent = "事件名称,备注,开始时间,结束时间,时间差\n";
         events.forEach(event => {
             const startTime = formatDateTime(event.startTime);
@@ -220,7 +218,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const note = event.note || '';  // 获取备注
             csvContent += `${event.eventName},${note},${startTime},${endTime},${timeDiff}\n`;
         });
-    
+
         try {
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
@@ -229,24 +227,35 @@ document.addEventListener('DOMContentLoaded', function () {
             link.setAttribute('href', url);
             link.setAttribute('download', `events_${new Date().toISOString().substring(0, 10)}.csv`);
             link.style.display = 'none';
-    
+
             document.body.appendChild(link);
             link.click();
-    
+
             URL.revokeObjectURL(url);
             document.body.removeChild(link);
         } catch (error) {
             console.error('导出CSV失败:', error);
         }
     }
-     function handleAction(action) {
+
+    function handleAction(action) {
         switch (action) {
             case 'addEvent':
                 const eventName = prompt('请输入事件名称:');
                 if (eventName) {
                     const note = prompt('请输入备注:');
-                    addNewEvent(eventName, null, null, null, note);
+                    const startTime = new Date().getTime();
+                    addNewEvent(eventName, startTime, null, null, note);
                 }
+                break;
+
+            case 'stop': // 新增的 case
+                const events = JSON.parse(localStorage.getItem('events')) || [];
+                events.forEach(event => {
+                    event.isRunning = false; // 停止所有计时
+                });
+                localStorage.setItem('events', JSON.stringify(events));
+                alert('所有计时已停止');
                 break;
 
             // 你可以添加其他操作的 case
@@ -255,7 +264,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-     function showDateTimeEditor(eventName, note, start, end, callback) {
+    function showDateTimeEditor(eventName, note, start, end, callback) {
         const editor = document.getElementById('datetime-editor');
         document.getElementById('edit-event-name').value = eventName;
         
@@ -311,5 +320,4 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         };
     }
-
 });
