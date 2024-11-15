@@ -252,19 +252,24 @@ document.addEventListener('DOMContentLoaded', function () {
             case 'stop': // 停止所有计时
                 const events = JSON.parse(localStorage.getItem('events')) || [];
                 const now = new Date().getTime(); // 当前时间作为结束时间
+            
                 events.forEach(event => {
                     if (event.isRunning) {
-                        event.endTime = now; // 设置结束时间
+                        const currentEndTime = now; // 设置结束时间
+                        event.endTime = currentEndTime; // 更新事件的结束时间
                         event.isRunning = false; // 更新计时状态
                         event.timeDiff = (event.endTime - event.startTime) / 1000; // 计算时间差
                     }
                 });
+
                 // 将更新后的事件数组保存回本地存储
                 localStorage.setItem('events', JSON.stringify(events));
-                alert('所有计时已停止');
+                alert('计时已停止');
+            
                 // 刷新事件显示
-                loadEvents();
+                loadEvents(); // 重新加载事件以更新界面显示
                 break;
+
     
             // 其他操作的 case
             default:
