@@ -246,11 +246,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function handleAction(action) {
-        switch (action) {
+        switch (action) { 
             case 'addEvent':
-                const eventName = prompt('请输入事件名称:');
+                const eventName = '测试1';
                 if (eventName) {
-                    const note = prompt('请输入备注:');
+                   
                     const startTime = new Date().getTime();
                     addNewEvent(eventName, startTime, null, null, note);
                 }
