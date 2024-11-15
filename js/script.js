@@ -249,7 +249,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 break;
     
-            case 'stop': // 停止所有计时
+           case 'stop': // 停止所有计时
                 const events = JSON.parse(localStorage.getItem('events')) || [];
                 const now = new Date().getTime(); // 当前时间作为结束时间
             
@@ -265,9 +265,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 localStorage.setItem('events', JSON.stringify(events));
                 alert('计时已停止');
             
+                // 刷新事件显示
+                loadEvents(); // 确保事件显示更新
+            
                 // 跳转回主页面
                 window.location.href = 'https://crystal-norway.github.io/goods.github.io/';
                 break;
+
 
 
 
