@@ -52,20 +52,36 @@ document.addEventListener('DOMContentLoaded', function () {
             const eventContainer = document.createElement('div');
             eventContainer.className = 'event';
             eventContainer.innerHTML = `
-                <div>事件名称: ${event.eventName}</div>
-                <div>备注: ${event.note}</div>
+                <div>事件名称: <span class="event-name">${event.eventName}</span></div>
+                <div>备注: <span class="event-note">${event.note}</span></div>
                 <div>开始时间: ${formatDateTime(event.startTime)}</div>
                 ${event.isRunning ? '' : `<div>结束时间: ${formatDateTime(event.endTime)}</div>`}
                 ${event.timeDiff ? `<div>持续时间: ${formatTimeDiff(event.timeDiff)}</div>` : ''}
+                <button class="edit-button">编辑</button>
                 <button class="delete-button">✖</button>
             `;
             document.getElementById('eventsContainer').appendChild(eventContainer);
+
+            eventContainer.querySelector('.edit-button').addEventListener('click', function () {
+                editEvent(event);
+            });
 
             eventContainer.querySelector('.delete-button').addEventListener('click', function () {
                 removeEvent(event.startTime);
                 loadEvents(); // 刷新事件显示
             });
         });
+    }
+
+    function editEvent(event) {
+        const newName = prompt('修改事件名称:', event.eventName);
+        const newNote = prompt('修改备注:', event.note);
+        if (newName !== null || newNote !== null) {
+            event.eventName = newName !== null ? newName : event.eventName;
+            event.note = newNote !== null ? newNote : event.note;
+            saveEvent(event);
+            loadEvents(); // 刷新事件显示
+        }
     }
 
     function formatDateTime(timestamp) {
