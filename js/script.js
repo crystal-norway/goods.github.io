@@ -9,14 +9,9 @@ document.addEventListener('DOMContentLoaded', function () {
     if (action) {
         handleAction(action);
     }
-    
+
     document.getElementById('addEventButton').addEventListener('click', function () {
-        const eventName = prompt('请输入事件名称:');
-        if (eventName) {
-            const note = prompt('请输入备注:');
-            const startTime = new Date().getTime();
-            addNewEvent(eventName, startTime, null, null, note);
-        }
+        addNewEventPrompt();
     });
 
     document.getElementById('clearAllButton').addEventListener('click', function () {
@@ -28,10 +23,34 @@ document.addEventListener('DOMContentLoaded', function () {
         exportDataToCSV();
     });
 
+    function addNewEventPrompt() {
+        const eventName = prompt('请输入事件名称:');
+        if (eventName) {
+            const note = prompt('请输入备注:');
+            endCurrentEvent(); // 结束当前事件
+            const startTime = new Date().getTime();
+            addNewEvent(eventName, startTime, null, null, note);
+        }
+    }
+
+    function endCurrentEvent() {
+        const events = JSON.parse(localStorage.getItem('events')) || [];
+        const now = new Date().getTime();
+        const currentEvent = events.find(event => event.isRunning);
+
+        if (currentEvent) {
+            currentEvent.endTime = now; // 更新事件的结束时间
+            currentEvent.isRunning = false; // 更新计时状态
+            currentEvent.timeDiff = (currentEvent.endTime - currentEvent.startTime) / 1000; // 计算时间差
+            saveEvent(currentEvent);
+            alert('当前事件已结束');
+        }
+    }
+
     function addNewEvent(eventName, startTime, endTime, timeDiff, note = '') {
         const eventContainer = document.createElement('div');
         eventContainer.className = 'event';
-    
+
         const eventNameContainer = document.createElement('div');
         eventNameContainer.className = 'event-name-container';
 
@@ -42,10 +61,10 @@ document.addEventListener('DOMContentLoaded', function () {
         editButton.innerText = '✏️';
         editButton.className = 'edit-button';
         eventNameContainer.appendChild(editButton);
-    
+
         let currentStartTime = startTime ? new Date(startTime) : new Date();
         let currentEndTime = endTime ? new Date(endTime) : new Date();
-        let isRunning = (endTime === null);  // 新增属性，表示计时是否正在进行
+        let isRunning = true;  // 新增属性，表示计时是否正在进行
 
         editButton.addEventListener('click', function () {
             showDateTimeEditor(eventName, note, currentStartTime, currentEndTime, function(newEventName, newNote, newStartTime, newEndTime) {
@@ -55,14 +74,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 endTimestampSpan.innerText = `结束时间: ${formatDateTime(newEndTime.getTime())}`;
                 const timeDiff = (newEndTime.getTime() - newStartTime.getTime()) / 1000;
                 timeDiffSpan.innerText = `时间差: ${formatTimeDiff(timeDiff)}`;
-    
+
                 removeEvent(currentStartTime.getTime());
-    
+
                 currentStartTime = newStartTime;
                 currentEndTime = newEndTime;
                 eventName = newEventName;
                 note = newNote;
-    
+
                 saveEvent({
                     eventName: newEventName,
                     startTime: newStartTime.getTime(),
@@ -74,17 +93,17 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
         eventNameContainer.appendChild(editButton);
-    
+
         const eventNameSpan = document.createElement('span');
         eventNameSpan.innerText = `事件名称: ${eventName}`;
         eventNameContainer.appendChild(eventNameSpan);
         eventContainer.appendChild(eventNameContainer);
-    
+
         const noteSpan = document.createElement('span');
         noteSpan.innerText = `备注: ${note}`;
         noteContainer.appendChild(noteSpan);
         eventContainer.appendChild(noteContainer);
-         
+
         const startButton = document.createElement('button');
         startButton.innerText = '开始';
         startButton.style.marginLeft = '10px';
@@ -246,14 +265,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function handleAction(action) {
-        switch (action) { 
+        switch (action) {
             case 'addEvent':
-                const eventName = '测试1';
-                if (eventName) {
-                   
-                    const startTime = new Date().getTime();
-                    addNewEvent(eventName, startTime, null, null, note);
-                }
+                addNewEventPrompt();
                 break;
 
             case 'stop': // 停止所有计时
