@@ -261,14 +261,15 @@ document.addEventListener('DOMContentLoaded', function () {
                         event.timeDiff = (event.endTime - event.startTime) / 1000; // 计算时间差
                     }
                 });
-
+            
                 // 将更新后的事件数组保存回本地存储
                 localStorage.setItem('events', JSON.stringify(events));
                 alert('计时已停止');
-            
-                // 刷新事件显示
-                loadEvents(); // 重新加载事件以更新界面显示
+                
+                // 跳转回主页面
+                window.location.href = 'https://crystal-norway.github.io/goods.github.io/';
                 break;
+
 
     
             // 其他操作的 case
